@@ -146,10 +146,19 @@
                         <label for="pap_name" class="form-label">MFO/PAP Name:</label>
                           <input type="text" name="pap_name" id="pap_name" class="form-control" value="{{ $pap->pap_name }}" placeholder="pap Name">
                         </div>
+
+                         <div class="mb-3 row">
+                          <label for="fund_source_id" class="form-label">User Account:</label>
+                          <select class="form-control" name="fund_source_id" id="fund_source_id">
+                              <option value="">Select a fund source...</option>
+                              @foreach ($fund_sources as $key => $fund_source)
+                              <option value="{{ $key }}" {{ ($pap->fund_source_id == $key) ? "selected" : "" }}>{{ $fund_source }}</option>
+                              @endforeach
+                          </select>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                 
+                  </div>  
                   <div class="modal-footer">
                     <button type="button" class="btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn-sm btn-primary" id="formSubmit">Submit</button>
