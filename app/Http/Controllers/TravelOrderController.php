@@ -229,7 +229,13 @@ class TravelOrderController extends Controller
      */
     public function destroy(TravelOrder $travelOrder)
     {
-        dd($travelOrder);
+        $this->authorize('travel_order-delete');
+
+        $travelOrder->delete();
+
+        toast('Travel Order deleted successfully!', 'success');
+
+        return redirect()->route('travel_orders.index');
     }
 
     public function sendApproval(Request $request) {

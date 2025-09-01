@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('travel_order_user_approval', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('travel_order_id')->constrained();
+            $table->foreignId('travel_order_id')->constrained()->cascadeOnDelete();
             $table->foreignId('approval_type_id')->constrained();
             $table->foreignId('user_id')->constrained();
             $table->text('remarks');
