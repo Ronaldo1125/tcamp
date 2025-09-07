@@ -20,8 +20,8 @@
   <!-- /.login-logo -->
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
-    <div class="mb-2"><img src="/dist/img/neda5logo.png"></div>
-    <div class="h5 font-weight-bold">NEDA 5 Travel Expenditure and Cash Advance Management Portal (TCAMP)</div>
+    <div class="mb-2"><img src="/dist/img/depdev_logo.png" width="100" height="100"></div>
+    <div class="h5 font-weight-bold">DEPDev 5 Travel Expenditure and Cash Advance Management Portal (TCAMP)</div>
     </div>
     <div class="card-body">
       <p class="login-box-msg font-weight-bold">Log In</p>

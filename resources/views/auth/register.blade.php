@@ -19,11 +19,11 @@
 <div class="register-box">
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
-      <div class="h5 font-weight-bold">NEDA 5 Travel Expenditure and Cash Advance Management Portal (TCAMP)</div>
+      <div class="h5 font-weight-bold">DEPDev 5 Travel Expenditure and Cash Advance Management Portal (TCAMP)</div>
     </div>
     <div class="card-body">
       <p class="login-box-msg font-weight-bold">Register a New Membership</p>
-      <p class="small p-2 bg-light shadow-lg font-weight-bold font-italic rounded-3 text-justify">NEDA PRIVACY NOTICE: "All the personal information contained in this system shall be used solely for documentation and processing purposes within the NEDA and shall not be shared with any outside parties, unless with your written consent. Personal information shall be retained and stored by NEDA within a time period in accordance with the National Archives of the Philippines' General Disposition Schedule."</p>
+      <p class="small p-2 bg-light shadow-lg font-weight-bold font-italic rounded-3 text-justify">DEPDEV PRIVACY NOTICE: "All the personal information contained in this system shall be used solely for documentation and processing purposes within the DEPDev and shall not be shared with any outside parties, unless with your written consent. Personal information shall be retained and stored by DEPDev within a time period in accordance with the National Archives of the Philippines' General Disposition Schedule."</p>
     </p>
 
       <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">

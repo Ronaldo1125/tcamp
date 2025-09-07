@@ -2,7 +2,7 @@
 
   <!-- Brand Logo -->
   <a href="{{ url('') }}" class="brand-link">
-    <img src="/dist/img/neda5logo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"  style="opacity: .8">
+    <img src="/dist/img/depdev_logo.png" alt="DEPDev Logo" class="brand-image img-circle elevation-3"  style="opacity: .8">
     <span class="brand-text font-weight-bolder text-blue">TCAMP Application</span>
   </a>
 
