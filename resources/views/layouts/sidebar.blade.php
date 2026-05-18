@@ -14,7 +14,7 @@
         <img src="/images/{{ $currentPicture }}" class="img-circle elevation-2" alt="User Image">
       </div>
       <div class="info">
-        <a href="#" class="d-block">{{ Auth::user()->name }}</a>
+        <a href="{{ route('profiles.index') }}" class="d-block">{{ Auth::user()->name }}</a>
       </div>
     </div>
 
@@ -44,7 +44,7 @@
       </li>
       <li class="nav-item">
         <a href="#" class="nav-link">
-          <i class="nav-icon fas fa-users"></i>
+          <i class="nav-icon fas fa-university"></i>
             <p>
               User Management
               <i class="right fas fa-angle-left"></i>
@@ -61,7 +61,7 @@
           </li>
           <li class="nav-item">
             <a href="{{ route('profiles.index') }}" class="nav-link">
-                <i class="nav-icon fas fa-users"></i>
+                <i class="nav-icon fas fa-id-card"></i>
               <p>
                 Profiles
               </p>
@@ -70,7 +70,7 @@
           
           <li class="nav-item">
             <a href="{{ route('profiles.changePassword') }}" class="nav-link">
-                <i class="nav-icon fas fa-users"></i>
+                <i class="nav-icon fas fa-unlock"></i>
               <p>
                 Change Password
               </p>
@@ -78,7 +78,7 @@
           </li>
           <li class="nav-item">
             <a href="{{ route('users.view_unapprove_users') }}" class="nav-link">
-                <i class="nav-icon fas fa-users"></i>
+                <i class="nav-icon fas fa-user-times"></i>
               <p>
                 Unapprove Users
               </p>
@@ -98,7 +98,7 @@
           <ul class="nav nav-treeview">
             <li class="nav-item">
               <a href="{{ route('roles.index') }}" class="nav-link">
-                  <i class="nav-icon fas fa-user-secret"></i>
+                  <i class="nav-icon far fa-circle"></i>
                 <p>
                   Manage Roles
                 </p>
@@ -146,10 +146,10 @@
                 Logout
              </p>
             </a>
-         {{-- <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
              @csrf
          </form>
-        --}}
+       
         </li>
  
         {{-- <li class="nav-item">

@@ -73,8 +73,22 @@ Route::group(['middleware' => 'prevent-back-history'],function(){
         Route::resource('paps', PapController::class);
 
         Route::post('/travel_orders/sendApproval/{id}', [TravelOrderController::class, 'sendApproval'])->name('travel_orders.sendApproval');
-        Route::get('/travel_orders/viewTravelOrder/{id}', [TravelOrderController::class, 'viewTravelOrder'])->name('travel_orders.view_travel_order');
+        Route::get('/travel_orders/viewTravelOrder/{travelOrder}', [TravelOrderController::class, 'viewTravelOrder'])->name('travel_orders.view_travel_order');
         Route::get('/travel_orders/viewORS/{id}', [TravelOrderController::class, 'viewORS'])->name('travel_orders.view_ors');
+        // Approval Actions (Specific steps)
+        Route::post('/travel_orders/{travelOrder}/approve', [TravelOrderController::class, 'approve'])
+            ->name('travel_orders.approve');
+            
+        Route::post('/travel_orders/{travelOrder}/disapprove', [TravelOrderController::class, 'disapprove'])
+            ->name('travel_orders.disapprove');
+
+        Route::get('/travel_orders/{travelOrder}/download', [TravelOrderController::class, 'downloadVoucher'])
+        ->name('travel_orders.download');
+
+        Route::get('/travel_orders/{travelOrder}/downloadORS', [TravelOrderController::class, 'downloadORS'])
+        ->name('travel_orders.downloadORS');
+
+
         Route::resource('travel_orders', TravelOrderController::class);
         
            
@@ -105,11 +119,12 @@ Route::group(['middleware' => 'prevent-back-history'],function(){
         
         //Route::post('/home/markNotification', [HomeController::class, 'markNotification'])->name('home.markNotification');
 
-
-
-
+        Route::post('/notifications/mark-as-read', function () {
+                auth()->user()->unreadNotifications->markAsRead();
+                return back();
+            })->name('notifications.mark-as-read')->middleware('auth');
         
-    });
+        });
 
 });
 

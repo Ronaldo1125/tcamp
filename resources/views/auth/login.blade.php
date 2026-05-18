@@ -74,11 +74,11 @@
             <a href="{{route('password.request')}}" class="text-center">I forgot my password</a>
           </div>
         </div>
-        <div class="row">
+        {{-- <div class="row">
           <div class="col-12">
             <a href="{{route('register')}}" class="text-center">Register a new membership</a>
           </div>
-        </div>
+        </div> --}}
       </form>
 
       <!-- <div class="social-auth-links text-center mt-2 mb-3">

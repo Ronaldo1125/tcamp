@@ -11,7 +11,7 @@ class Profile extends Model
 {
     use HasFactory, LogsActivity;
 
-    protected $fillable = ['mobile_no', 'address'];
+    protected $fillable = ['mobile_no', 'address']; 
 
     public function getActivitylogOptions(): LogOptions
     {

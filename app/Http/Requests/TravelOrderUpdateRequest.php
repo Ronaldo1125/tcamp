@@ -3,9 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class TravelOrderStoreRequest extends FormRequest
+class TravelOrderUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,13 +23,11 @@ class TravelOrderStoreRequest extends FormRequest
     {
         return [
             'purpose' => ['required'],
-            'purpose_image_filename' => ['required', 'mimes:pdf', 'max:2048'],
+            'purpose_image_filename' => ['sometimes', 'mimes:pdf', 'max:2048'],
             'destination' => ['required'],
             'travel_departure_date' => ['required', 'date', 'after_or_equal:today'],
             'travel_arrival_date' => ['required', 'date', 'after_or_equal:travel_departure_date'],
             'fund_source_id' => ['required'],
-            'pap_id' => ['required_unless: fund_source_id, lt:3'],
-            'other_pap_name' => ['required_without:pap_id'],
             'is_travel_related_to_training' => ['required'],
             'is_cash_advance' => ['required'],
             //'grand_total' => ['required', 'numeric'],
@@ -61,14 +58,6 @@ class TravelOrderStoreRequest extends FormRequest
                 'different:immediate_supervisor_id', 
                 'different:management_id'
             ],
-        ];   
-    }
-
-    public function messages()
-    {
-        return [
-            'different' => 'Each approval stage must be assigned to a different person.',
-            'after'     => 'The travel date must be a future date.',
         ];
     }
 }

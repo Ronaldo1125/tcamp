@@ -12,7 +12,7 @@
     <div class="container-fluid">
       <div class="row mb-3">
         <div class="col-sm-6">
-          <h1 class="m-0">Profile</h1>
+          <h5 class="ml-5 fw-bold">Profile (Change Password)</h5>
         </div><!-- /.col -->
         
        
@@ -29,10 +29,7 @@
  <p>
     
       <div class="row mx-5">
-        <div class="col-xs-10 col-sm-10 col-md-10">
-        
-          <h4 class="my-3">Change Password</h4>
-
+        <div class="col-xs-6 col-sm-6 col-md-6">
           <p>Ensure your account is using a long, random password to stay secure.</p>
           <form action="{{ route('profiles.updatePassword', $user->id) }}" method="POST" id="update-form" enctype="multipart/form-data">
             @csrf

@@ -2,19 +2,20 @@
 
 namespace App\Models;
 
-use App\Models\Pap;
-use App\Models\User;
-use App\Models\FundSource;
 use App\Models\ApprovalType;
+use App\Models\FundSource;
+use App\Models\Pap;
 use App\Models\TravelItinerary;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class TravelOrder extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, LogsActivity, Notifiable;
 
     protected $fillable = [
         'to_code',
@@ -29,6 +30,14 @@ class TravelOrder extends Model
         'other_pap_name',
         'is_travel_related_to_training',
         'is_cash_advance',
+        'immediate_supervisor_id',
+        'management_id',
+        'budget_officer_id',
+        'status',
+        'remarks',
+        'immediate_supervisor_approved_at',
+        'management_approved_at',
+        'budget_officer_approved_at',
         'grand_total',
 
     ];
@@ -64,5 +73,21 @@ class TravelOrder extends Model
 
     public function travel_order_user_approvals(){
         return $this->hasMany(TravelOrderUserApproval::class);
+    }
+
+
+    // The assigned Unit Head
+    public function immediateSupervisor() {
+        return $this->belongsTo(User::class, 'immediate_supervisor_id');
+    }
+
+    // The assigned Supervisor
+    public function management() {
+        return $this->belongsTo(User::class, 'management_id');
+    }
+
+    // The assigned Director
+    public function budgetOfficer() {
+        return $this->belongsTo(User::class, 'budget_officer_id');
     }
 }

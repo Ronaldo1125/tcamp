@@ -11,11 +11,9 @@
 <div class="content-header">
     <div class="container-fluid">
       <div class="row mb-5">
-        <div class="col-sm-6">
-          <h1 class="m-0">Users Management</h1>
-        </div><!-- /.col -->
-        
-       
+        <div class="col-sm-6">  
+          <h5 class="ml-5 fw-bold">User Management</h5>
+        </div><!-- /.col --> 
       </div><!-- /.row -->
       <div class="row mb-2">
         @can('user-create')

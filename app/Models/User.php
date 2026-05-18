@@ -95,4 +95,8 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(TravelOrderUserApproval::class);
     }
+
+    public function immediateSupervisorRequests(){
+        return $this->hasMany(TravelOrder::class, 'immediate_supervisor_id');
+    }
 }

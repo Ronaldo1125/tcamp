@@ -11,8 +11,10 @@ class MailController extends Controller
     public function index() 
     {
         $subject = 'Application of Travel Order';
+        $content = "Testing lang po.";
+        $travel_order = 2;
 
-        Mail::to('rbbanas@neda.gov.ph')->send(new TestMail($subject));
+        Mail::to('rbbanas@depdev.gov.ph')->send(new TestMail($subject, $content, $travel_order));
         
 
     }

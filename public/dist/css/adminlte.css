@@ -61,7 +61,7 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 body {
   margin: 0;
   font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-size: 1rem;
+  font-size: 0.90rem;
   font-weight: 400;
   line-height: 1.5;
   color: #212529;
@@ -245,7 +245,7 @@ optgroup,
 textarea {
   margin: 0;
   font-family: inherit;
-  font-size: inherit;
+  font-size: 0.80rem;
   line-height: inherit;
 }
 
@@ -2045,7 +2045,7 @@ pre code {
   width: 100%;
   height: calc(2.25rem + 2px);
   padding: 0.375rem 0.75rem;
-  font-size: 1rem;
+  font-size: 0.80rem;
   font-weight: 400;
   line-height: 1.5;
   color: #495057;
@@ -53040,12 +53040,20 @@ a.text-muted:hover {
 /** change the color of the error validation**/
 .error-help-block {
   color:red !important;
-  font-size: .9rem;
+  font-size: .70rem;
   
 }
 
 input[type="number"]::-webkit-inner-spin-button {
   display: none;
+}
+
+.text-extra-small {
+    font-size: 0.75rem; /* Or 10px, 12px, etc. */
+}
+
+.itineraryField {
+  font-size: 0.75rem; /* Or 10px, 12px, etc. */
 }
 
 /*# sourceMappingURL=adminlte.css.map */

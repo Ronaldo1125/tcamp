@@ -25,9 +25,11 @@ return new class extends Migration
             $table->string('other_pap_name')->nullable();
             $table->tinyInteger('is_travel_related_to_training')->default(0);
             $table->tinyInteger('is_cash_advance')->default(0);
-            $table->tinyInteger('is_approved_by_budget_officer')->default(0);
-            $table->tinyInteger('is_approved_by_immediate_supervisor')->default(0);
-            $table->tinyInteger('is_approved_by_management')->default(0);
+            $table->foreignId('immediate_supervisor_id')->constrained('users');
+            $table->foreignId('management_id')->constrained('users');
+            $table->foreignId('budget_officer_id')->constrained('users');
+            $table->string('status')->default('pending');
+            $table->integer('current_step')->default(1); // 1: Immediate Supervisor, 2: ARD, 3: Budget Officer
             $table->double('grand_total', 8,2)->default(0);
             $table->timestamps();
         });

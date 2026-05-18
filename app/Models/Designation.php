@@ -23,5 +23,10 @@ class Designation extends Model
     {
         return $this->hasMany(User::class, 'designation_id', 'id');
     }
+
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
     
 }

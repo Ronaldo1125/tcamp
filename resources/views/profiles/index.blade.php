@@ -12,7 +12,7 @@
     <div class="container-fluid">
       <div class="row mb-3">
         <div class="col-sm-6">
-          <h1 class="m-0">User Profile</h1>
+          <h5 class="ml-5 fw-bold">User Profile</h5>
         </div><!-- /.col -->
         
        
@@ -50,7 +50,7 @@
                                             </a>
                                         </div>
 
-                                        <h5 class="my-3 font-weight-bold">{{$userinfo->name}}</h5>
+                                        <h6 class="my-3 font-weight-bold">{{$userinfo->name}}</h6>
                                         <p class="text-sm mb-1">{{$userinfo->email}}</p>
                                         <div class="d-flex justify-content-center mb-2"></div>
                                     </div>

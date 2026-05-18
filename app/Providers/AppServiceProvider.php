@@ -37,10 +37,10 @@ class AppServiceProvider extends ServiceProvider
         //dd(Auth::user());
         //if(!empty(Auth::user()->id)) 
         //{
-           //$picture = Profile::where('user_id', '=', 1)->get();
-           //dd($picture);
-           $name = 'ronaldo banas';
-            view()->share('name', $name); 
+        //    $picture = Profile::where('user_id', '=', 1)->get();
+        //    dd($picture);
+        //    $name = 'ronaldo banas';
+        //     view()->share('name', $name); 
         //}
         
     }

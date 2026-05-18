@@ -85,7 +85,11 @@ class UserController extends Controller
             'is_active' => $request->has('is_active'),
         ]);
 
+        $user->profile()->create();
+
         $user->assignRole($request->input('role_id'));
+
+        $user->sendEmailVerificationNotification();
         
         toast('User data added successfully!','success');
 

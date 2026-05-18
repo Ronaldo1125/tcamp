@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="_token" content="{{csrf_token()}}" />
-  <title>NEDA 5 - Travel Expenditure and Cash Advance Management Portal</title>
+  <title>DEPDev 5 - Travel Expenditure and Cash Advance Management Portal</title>
  
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -39,9 +39,9 @@
       
       @if (Route::has('login'))
                     @auth
-                    <li class="nav-item d-none d-sm-inline-block">
+                    {{-- <li class="nav-item d-none d-sm-inline-block">
                         <a href="{{ url('/home') }}" class="nav-link">Home</a>
-                    </li>
+                    </li> --}}
                     @else
 
                     <li class="nav-item d-none d-sm-inline-block">
@@ -67,7 +67,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <!-- Left Side Of Navbar -->
       <ul class="navbar-nav me-auto">
-
+        
       </ul>
 
       <!-- Right Side Of Navbar -->
@@ -114,15 +114,67 @@
                 </div>
               </li> --}}
               {{-- <li><a class="nav-link" href="{{ route('travel.index') }}">Create Travel Order</a></li> --}}
-              <li><a class="nav-link" href="{{ route('logout') }}"
-                onclick="event.preventDefault();
-                              document.getElementById('logout-form').submit();">
-                 {{ __('Logout') }}
-             </a>
+                 <!-- Notification Dropdown -->
+            <li class="nav-item dropdown">
+                <a class="nav-link position-relative pt-3" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="far fa-bell fs-5"></i>
+                    
+                    {{-- The Dynamic Badge --}}
+                    @if(auth()->user()->unreadNotifications->count() > 0)
+                        <span class="position-absolute top-5 start-85 translate-middle badge rounded-pill bg-danger">
+                            {{ auth()->user()->unreadNotifications->count() }}
+                            <span class="visually-hidden">unread messages</span>
+                        </span>
+                    @endif
+                </a>
 
-             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                 @csrf
-             </form></li>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="width: 300px;">
+                    <li class="dropdown-header d-flex justify-content-between align-items-center">
+                        <span>Notifications</span>
+                        @if(auth()->user()->unreadNotifications->count() > 0)
+                            <form action="{{ route('notifications.mark-as-read') }}" method="POST" class="m-0">
+                                @csrf
+                                <button type="submit" class="btn btn-link btn-sm p-0 text-decoration-none" style="font-size: 0.75rem;">Mark all read</button>
+                            </form>
+                        @endif
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+
+                    <div style="max-height: 300px; overflow-y: auto;">
+                        @forelse(auth()->user()->unreadNotifications as $notification)
+                            <li>
+                                <a class="dropdown-item py-3 border-bottom" href="{{ route('travel_orders.show', $notification->data['travel_order_id']) }}">
+                                    <p class="mb-1 small fw-bold">{{ $notification->data['message'] }}</p>
+                                    <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                                </a>
+                            </li>
+                        @empty
+                            <li class="text-center py-4 text-muted">
+                                <i class="bi bi-check2-all fs-4 d-block"></i>
+                                <small>No new notifications</small>
+                            </li>
+                        @endforelse
+                    </div>
+                </ul>
+            </li>
+
+            <li>
+              <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+                            <div class="container">
+                              <a class="navbar-brand fw-bold" href="{{ url('home')}}">Dashboard</a>
+                              <div class="navbar-nav ms-auto">
+                                <a class="nav-link" href="{{ route('travel_orders.index')}}">My Requests</a>
+                                <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                  @csrf
+                                  <button class="btn btn-light btn-sm ms-lg-3">Logout</button>
+                                </form>
+                              </div>
+                            </div>
+                          </nav>
+
+            </li>
+             
+            
           @endguest
       </ul>
   </div>

@@ -12,7 +12,7 @@
     <div class="container-fluid">
       <div class="row mb-5">
         <div class="col-sm-6">
-          <h1 class="m-0">MFO/PAPs Management</h1>
+          <h5 class="ml-5 fw-bold ">MFO/PAPs Management</h5>
         </div><!-- /.col -->
         
        

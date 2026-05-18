@@ -17,7 +17,7 @@
 </head>
 <body class="hold-transition bg-img">
     <div class="m-3 text-end text-white-50 ">
-        <h6><a href="{{ route('home') }}">Home</a></h6>    
+        <a href="{{ route('home') }}"><button type="button" class="btn btn-primary">Home</button></a>  
     </div>
 <div class="container mt-5">
             <div class="card card-outline">

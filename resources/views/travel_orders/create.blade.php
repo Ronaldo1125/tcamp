@@ -13,7 +13,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm-6">
-        <h1 class="m-0">Pre Travel Order Application</h1>
+        <h5 class="ml-5 fw-bold">Pre-Travel Order Application</h5>
       </div><!-- /.col -->
     </div><!-- /.row -->
   </div><!-- /.container-fluid -->
@@ -27,7 +27,7 @@
       <div class="col-md-12">
         <div class="card card-primary">
           <div class="card-header">
-            <h3 class="card-title">Create Pre Travel Order</h3>
+            <h3 class="card-title">&nbsp;</h3>
           </div>
             <form action="{{ route('travel_orders.store') }}" method="POST" id="add-form" enctype="multipart/form-data">    	
             @csrf
@@ -92,11 +92,11 @@
 
                         <div class="col-3">
                           <label for="pap_id" class="form-label">MFO/PAPs:</label>
-                                <select class="form-control" name="pap_id" id="pap_id">
+                                <select class="form-control" name="pap_id" id="pap_id">            
                                   <option value="">-- Select MFO/PAPs --</option>
                                 </select>
                                 <br>
-                                <input type="text" name="other_pap_name" class="form-control" id="other_pap_name" placeholder="MFO/PAPs Name">
+                                <input type="text" name="other_pap_name" class="form-control" id="other_pap_name" placeholder="MFO/PAPs Name"/>
                         </div>
                         
                         <div class="col-3">
@@ -116,21 +116,53 @@
                         </div>
                       </div>
                     </div>
-                  </div>
+
                     <div class="form-group">
-                      <div class="row my-3 mr-4">
-                        <div class="col-12 text-end">
-                          <a href="javascript:(0)" class="btn btn-success btn-sm addRow">+ ADD</a>
+                      <div class="row">
+                        <div class="col-3">
+                          <label for="immediate_supervisor_id" class="form-label">Immediate Supervisor:</label>
+                              <select class="form-control" name="immediate_supervisor_id" id="immediate_supervisor_id">
+                              @foreach ($users as $user)
+                                <option value="{{ $user->id }}" {{ ($user->id == default_immediate_supervisor_id() ) ? "selected" : "" }}>{{ $user->name }}</option>
+                              @endforeach
+                              </select>
+                         
                         </div>
+                        <div class="col-3">
+                          <label for="management_id" class="form-label">Management:</label>
+                                <select class="form-control" name="management_id" id="management_id">
+                                  {{-- <option value="">-- Select Management --</option> --}}
+                                  @foreach ($users as $user)
+                                <option value="{{ $user->id }}" {{ ($user->id == default_management_id() ) ? "selected" : "" }}>{{ $user->name }}</option>
+                              @endforeach
+                              </select>
+                        </div>
+
+                         <div class="col-3">
+                          <label for="budget_officer_id" class="form-label">Budget Officer:</label>
+                                <select class="form-control" name="budget_officer_id" id="budget_officer_id">
+                                  @foreach ($users as $user)
+                                <option value="{{ $user->id }}" {{ ($user->id == default_budget_officer_id() ) ? "selected" : "" }}>{{ $user->name }}</option>
+                              @endforeach
+                              </select>
+                        </div>                        
                       </div>
                     </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="row my-3 mr-4">
+                      <div class="col-12 text-end">
+                        <a href="javascript:(0)" class="btn btn-success btn-xs addRow">+ ADD</a>
+                      </div>
+                    </div>
+                  </div>
 
                     <div class="form-group">
                       <div class="itineryMain" id="itinerary-form">
                         <div class="mb-3 pt-2 row itineraryField bg-light" id="itinerary_field">
                           <div class="col-2">
                             <label for="itinerary_date" class="form-label">Date:</label>
-                            <input type="date" name="inputs[0][itinerary_date]" id="itinerary_date" value="{{ old('inputs[0][itinerary_date]') }}" class="form-control" readonly>
+                            <input type="date" name="inputs[0][itinerary_date]" id="itinerary_date" value="{{ old('inputs[0][itinerary_date]') }}" class="form-control">
                           </div>
                           <div class="col-2 mb-3">
                               <label for="region_code" class="form-label">Region:</label>
@@ -192,7 +224,9 @@
         
                           <div class="col-1 text-center">
                             <label for="with_incidental_expenses" class="form-label">Inc. Expenses:</label>
-                            <input type="checkbox" name="inputs[0][with_incidental_expenses]" value="with_incidental_expenses" id="with_incidental_expenses" onclick="addIncidentalExpenses(this);">
+                             <div class="form-check">
+                                <input type="checkbox" name="inputs[0][with_incidental_expenses]" value="with_incidental_expenses" id="with_incidental_expenses" onclick="addIncidentalExpenses(this);">
+                             </div>
                           </div>
         
                           <div class="col-1">
@@ -201,23 +235,22 @@
                           </div>
                         </div>
                       </div>
-        
                     </div>
-                </div>
+                  
         
                 <div class="my-3 row align-items-end">
-                  <div class="col-9"></div>
-                  <div class="col-1">
+                  <div class="col-8"></div>
+                  <div class="col-2 text-end">
                     <label for="grand_total" class="form-label">Grand Total:</label>
                   </div>
                   <div class="col-2">
-                    <input type="numbers" name="grand_total" id="grand_total" class="form-control text-end bg-yellow fw-bold text-white" readonly>
+                    <input type="number" name="grand_total" id="grand_total" class="form-control text-end bg-yellow fw-bold text-white" readonly>
                   </div>
                 </div>
         
               </div>
               <div class="col-xs-12 col-sm-12 col-md-12 text-center py-3">
-                <button type="submit" class="btn-sm btn-primary"><i class="fas fa-save"></i> Submit</button>
+                <button type="submit" class="btn-sm btn-primary">Submit</button>
               </div>
           </div>   
         </form>
@@ -259,8 +292,6 @@
       $(document).on('change', '#fund_source_id', function(){
         let fundSource = $('#fund_source_id').val();
 
-        //console.log(fundSource);
-
         if(fundSource == '') {
           pap.attr('disabled','disabled');
           pap.removeAttr('required');
@@ -276,26 +307,19 @@
               fund_source_id: fundSource
             },
             success: function (data) {
-
-              //console.log(data);
-
               if(data.length == 0) {
-                
                 otherPapName.show();
-                otherPapName.attr('required', true);
+                $('#pap_id-error').hide();
                 pap.hide();
-                pap.removeAttr('required');
-
               } else {
                 pap.html('<option value="">-- Select MFO/PAPs --</option>');
                 $.each(data, function(id,value){
                   pap.append('<option value="' + value.id + '">' + value.pap_name + '</option>');
                 })
                 pap.removeAttr('disabled');
-                pap.attr('required', true);
                 pap.show();
+                $('#other_pap_name-error').hide();
                 otherPapName.hide();
-                otherPapName.removeAttr('required');
               }
               //console.log(data);
             }
@@ -372,7 +396,9 @@
 
               <div class="col-1 text-center">
                 <label for="with_incidental_expenses" class="form-label">Inc. Expenses:</label>
-                <input type="checkbox" name="inputs[`+i+`][with_incidental_expenses]" value="with_incidental_expenses" id="with_incidental_expenses" onclick="addIncidentalExpenses(this);">
+                  <div class="form-check">
+                    <input type="checkbox" name="inputs[`+i+`][with_incidental_expenses]" value="with_incidental_expenses" id="with_incidental_expenses" onclick="addIncidentalExpenses(this);">
+                  </div>
               </div>
 
               <div class='col'>
@@ -380,7 +406,7 @@
                 <input type="number" name="inputs[`+i+`][total]" id="total" class="form-control text-end fw-semibold bg-dark-subtle" readonly>
               </div>
               <div class="col text-center">
-                <a href="javascript:(0)" class="btn btn-danger btn-sm mt-4 deleteRow">- DEL</a>
+                <a href="javascript:(0)" class="btn btn-danger btn-xs mt-4 deleteRow">- DEL</a>
               </div>
             </div>`);
 

@@ -219,7 +219,7 @@ p.signatory {
     <div class="panel panel-default">
       <div class="panel-body">
         <div class="my-4 text-center">
-          <center><img class="mb-3" src="{{ asset('dist/img/depdev5header2.png') }}"></center>
+          <center><img class="mb-3" src="{{ public_path('dist/img/depdev5header2.png') }}"></center>
             <p align="right" class="text-end mr-5">Local Travel Order No. {{ to_number($travelOrder->to_code, $travelOrder->id) }}</p>  
         </div>
   
@@ -311,7 +311,7 @@ p.signatory {
                 <td colspan="4">PREPARED BY:<br><br>
                  
                       <div class="pos_cen">
-                      <img src="{{ asset('images/' . $travelOrder->user->profile->esignature) }}" class="img_signature">
+                      <img src="{{ public_path('images/' . $travelOrder->user->profile->esignature) }}" class="img_signature">
                       <p class="signatory">Electronically signed by {{ $travelOrder->user->name }} Date: {{ date('Y.m.d H:i:s', strtotime($travelOrder->created_at)) }}</p>
                     </div>
                     <p><center><strong>{{ $travelOrder->user->name }}</strong></center></p>
@@ -321,9 +321,9 @@ p.signatory {
                 <td colspan="6" rowspan="2">REVIEWED/RECOMMENDING APPROVAL:<br><br>
                   <div style="text-indent: 30px;"><small>I certify that: (1) I reviewed the foregoing itinerary, (2) the travel is necessary to the
                     service, (3) the period covered is reasonable, (4) the expenses claimed are proper.</small></div><br><br><br>
-                    @if(isset($travelOrder->immediate_supervisor_approved_at))
+                    @if(isset($travelOrder->immediateSupervisor->profile->esignature))
                     <div class="pos_cen">
-                      <img src="{{ asset('images/' . $travelOrder->immediateSupervisor->profile->esignature) }}" class="img_signature">
+                      <img src="{{ public_path('images/' . $travelOrder->immediateSupervisor->profile->esignature) }}" class="img_signature">
                       <p class="signatory">Electronically signed by {{ $travelOrder->immediateSupervisor->name }} Date: {{ date('Y.m.d H:i:s', strtotime($travelOrder->immediate_supervisor_approved_at)) }}</p>
                     </div>
                     @endif
@@ -339,9 +339,9 @@ p.signatory {
               <tr>
                 <td colspan="10" class="text-end">
                   <span><center>APPROVED:</center></span><br><br><br>
-                  @if(isset($travelOrder->management_approved_at))
+                  @if(isset($travelOrder->management->profile->esignature))
                   <div class="pos_cen">
-                      <img src="{{ asset('images/' . $travelOrder->management->profile->esignature) }}" class="img_signature">
+                      <img src="{{ public_path('images/' . $travelOrder->management->profile->esignature) }}" class="img_signature">
                       <p class="signatory">Electronically signed by {{ $travelOrder->management->name }} Date: {{ date('Y.m.d H:i:s', strtotime($travelOrder->management_approved_at)) }}</p>
                   </div>
                       
@@ -359,8 +359,78 @@ p.signatory {
     </div>
   </div>
 </div>
-
 </body>
 </html>
-    
- 
+
+{{-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Styled Table</title>
+    <style>
+        /* Table container styling */
+        table {
+            width: 100%;
+            border-collapse: collapse; /* Merges cell borders into one */
+            font-family: Arial, sans-serif;
+            margin: 25px 0;
+            font-size: 0.7em;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Header styling */
+        thead tr {
+            background-color: #009879;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        /* Cell padding and borders */
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #dddddd; /* Basic border for visibility */
+        }
+
+        /* Zebra striping for better readability */
+        tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        /* Highlight the last row */
+        tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Product Inventory</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Item Name</th>
+                <th>Category</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Laptop</td>
+                <td>Electronics</td>
+                <td>$999</td>
+            </tr>
+            <tr>
+                <td>Desk Chair</td>
+                <td>Furniture</td>
+                <td>$150</td>
+            </tr>
+            <tr>
+                <td>Monitor</td>
+                <td>Electronics</td>
+                <td>$200</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html> --}}

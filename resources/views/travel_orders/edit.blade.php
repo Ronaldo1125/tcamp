@@ -13,7 +13,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm-6">
-        <h1 class="m-0">Edit Pre Travel Order Application</h1>
+        <h5 class="ml-5 fw-bold">Resubmit Pre-Travel Order Application</h5>
       </div><!-- /.col -->
     </div><!-- /.row -->
   </div><!-- /.container-fluid -->
@@ -27,10 +27,11 @@
       <div class="col-md-12">
         <div class="card card-primary">
           <div class="card-header">
-            <h3 class="card-title">Edit Pre Travel Order</h3>
+            <h3 class="card-title">&nbsp;</h3>
           </div>
             <form action="{{ route('travel_orders.update', $travelOrder->id) }}" method="POST" id="add-form" enctype="multipart/form-data">    	
             @csrf
+            @method('PUT')
             <input type="hidden" name="user_id" value="{{ Auth::user()->id }}"/>
             <div class="card-body">
               <div class="row mx-5">
@@ -137,37 +138,75 @@
                       </div>
                     </div>
                   </div>
+
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-3">
+                          <label for="immediate_supervisor_id" class="form-label">Immediate Supervisor:</label>
+                              <select class="form-control" name="immediate_supervisor_id" id="immediate_supervisor_id">
+                              @foreach ($users as $user)
+                                <option value="{{ $user->id }}" {{ ($user->id == $travelOrder->immediate_supervisor_id) ? "selected" : "" }}>{{ $user->name }}</option>
+                              @endforeach
+                              </select>
+                         
+                        </div>
+                        <div class="col-3">
+                          <label for="management_id" class="form-label">Management:</label>
+                                <select class="form-control" name="management_id" id="management_id">
+                                  {{-- <option value="">-- Select Management --</option> --}}
+                              @foreach ($users as $user)
+                                <option value="{{ $user->id }}" {{ ($user->id == $travelOrder->management_id ) ? "selected" : "" }}>{{ $user->name }}</option>
+                              @endforeach
+                              </select>
+                        </div>
+
+                         <div class="col-3">
+                          <label for="budget_officer_id" class="form-label">Budget Officer:</label>
+                                <select class="form-control" name="budget_officer_id" id="budget_officer_id">
+                                  @foreach ($users as $user)
+                                <option value="{{ $user->id }}" {{ ($user->id == $travelOrder->budget_officer_id ) ? "selected" : "" }}>{{ $user->name }}</option>
+                              @endforeach
+                              </select>
+                        </div>                        
+                      </div>
+                    </div>
+                  </div> 
+
                     <div class="form-group">
                       <div class="row my-3 mr-4">
                         <div class="col-12 text-end">
-                          <a href="javascript:(0)" class="btn btn-success btn-sm addRow">+ ADD</a>
+                          <a href="javascript:(0)" class="btn btn-success btn-xs addRow">+ ADD</a>
                         </div>
                       </div>
                     </div>
 
                     <div class="form-group">
                       <div class="itineryMain" id="itinerary-form">
+                        @php
+                          $i = 0;
+                        @endphp
+                        @foreach($travelOrder->travel_itinineraries as $int => $travel_itinerary)
                         <div class="mb-3 pt-2 row itineraryField bg-light" id="itinerary_field">
                           <div class="col-2">
                             <label for="itinerary_date" class="form-label">Date:</label>
-                            <input type="date" name="inputs[0][itinerary_date]" id="itinerary_date" value="{{ old('inputs[0][itinerary_date]') }}" class="form-control" readonly>
+                            <input type="date" name="inputs[{{ $int }}][itinerary_date]" id="itinerary_date" value="{{ $travel_itinerary->itinerary_date }}" class="form-control">
                           </div>
                           <div class="col-2 mb-3">
-                              <label for="region_code" class="form-label">Region:</label>
-                              <select class="form-control" name="inputs[0][region_code]" id="region_code" onchange="getProvinces(this); getRegionCost(this);">
+                              <label for="region_code{{ $int }}" class="form-label">Region:</label>
+                              <select class="form-control" name="inputs[{{ $int }}][region_code]" id="region_code{{ $int }}" onchange="getProvinces(this); getRegionCost(this);">
                                 <option value="">-- Select Region --</option>
                                   @foreach ($regions as $key => $region)
-                                  <option value="{{ $key }}" {{ (old("inputs[0][region_code]") == $key ? "selected":"") }}>{{ $region }}</option>
+                                  <option value="{{ $key }}" {{ ($travel_itinerary->region_code  == $key) ? "selected":"" }}>{{ $region }}</option>
                                   @endforeach
                               </select>
 
-                              <label for="province_code" class="form-label">Province:</label>
-                              <select class="form-control" name="inputs[0][province_code]" id="province_code0" onchange="getCities(this);" disabled>
+                              <label for="province_code{{$int}}" class="form-label">Province:</label>
+                              <select class="form-control" name="inputs[{{ $int }}][province_code]" id="province_code{{$int}}" onchange="getCities(this);" disabled>
                                 <option value="">-- Select Province --</option>
                             </select>
                                                          
-                              <label for="city_code" class="form-label">City/Municipality:</label>
-                              <select class="form-control" name="inputs[0][city_code]" id="city_code0" disabled>
+                              <label for="city_code{{$int}}" class="form-label">City/Municipality:</label>
+                              <select class="form-control" name="inputs[{{ $int }}][city_code]" id="city_code{{$int}}" disabled>
                                 <option value="">-- Select City --</option>
                               </select>           
                           </div>
@@ -175,69 +214,80 @@
                           <div class="col-2">
                             <div class="row-3">
                               <label for="estimated_time_of_departure" class="form-label">ETD:</label>
-                              <input type="time" name="inputs[0][estimated_time_of_departure]" class="form-control">
+                              <input type="time" name="inputs[{{ $int }}][estimated_time_of_departure]" id="estimated_time_of_departure" value="{{ \Carbon\Carbon::parse($travel_itinerary->estimated_time_of_departure)->format('H:i') }}" class="form-control">
                             </div>
                             <div class="row-3">
                               <label for="estimated_time_of_arrival" class="form-label">ETA:</label>
-                              <input type="time" name="inputs[0][estimated_time_of_arrival]" class="form-control">
+                              <input type="time" name="inputs[{{ $int }}][estimated_time_of_arrival]" id="estimated_time_of_arrival" value="{{ \Carbon\Carbon::parse($travel_itinerary->estimated_time_of_arrival)->format('H:i') }}" class="form-control">
                             </div>   
                           </div>
                           <div class="col-1">
                             <label for="transportation_id" class="form-label">Transport:</label>
-                            <select class="form-control" name="inputs[0][transportation_id]" id="transportation_id">
+                            <select class="form-control" name="inputs[{{ $int }}][transportation_id]" id="transportation_id">
                               <option value="">-- Transpo --</option>
                                 @foreach ($transportations as $key => $transportation)
-                                <option value="{{ $key }}" {{ (old("inputs[0][transportation_id]") == $key ? "selected":"") }}>{{ $transportation }}</option>
+                                <option value="{{ $key }}" {{ ($travel_itinerary->transportation_id)  == $key ? "selected='selected'" : "" }}>{{ $transportation }}</option>
                                 @endforeach
                             </select>
                             <label for="fare" class="form-label">Fare:</label>
-                            <input type="number" name="inputs[0][transportation_price]" id="fare" value="{{ old('inputs[0][transportation_price]') }}" class="form-control text-end" placeholder="PhP" oninput="addTransportPrice(this);">
+                            <input type="number" name="inputs[{{ $int }}][transportation_price]" id="fare" value="{{ $travel_itinerary->transportation_price }}" class="form-control text-end" placeholder="PhP" oninput="addTransportPrice(this);">
                           </div>
         
                           <div class="col-1 text-center">
                             <label for="with_lodging" class="form-label">Lodging:</label>
                             <div class="form-check">
-                              <input type="checkbox" name="inputs[0][with_lodging]" value="with_lodging" id="with_lodging" onclick="addLodging(this);">
+                              <input type="checkbox" name="inputs[{{ $int }}][with_lodging]" value="with_lodging" id="with_lodging" {{ ($travel_itinerary->with_lodging) ? "checked" : "" }} onclick="addLodging(this);">
                             </div>
                           </div>
         
                           <div class="col-1 text-center">
                             <label for="with_breakfast" class="form-label">Meals:</label>
                             <div class="form-check">
-                              <input type="checkbox" name="inputs[0][with_breakfast]" value="with_breakfast" id="with_breakfast" onclick="addBreakfast(this);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Breakfast">&nbsp;
-                              <input type="checkbox" name="inputs[0][with_lunch]" value="with_lunch" id="with_lunch" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Lunch" onclick="addLunch(this);">&nbsp;
-                              <input type="checkbox" name="inputs[0][with_snack]" value="with_snack" id="with_snack" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="PM Snack" onclick="addSnack(this);">
+                              <input type="checkbox" name="inputs[{{ $int }}][with_breakfast]" value="with_breakfast" id="with_breakfast" {{ ($travel_itinerary->with_breakfast) ? "checked" : "" }} onclick="addBreakfast(this);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Breakfast">&nbsp;
+                              <input type="checkbox" name="inputs[{{ $int }}][with_lunch]" value="with_lunch" id="with_lunch" {{ ($travel_itinerary->with_lunch) ? "checked" : "" }} data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Lunch" onclick="addLunch(this);">&nbsp;
+                              <input type="checkbox" name="inputs[{{ $int }}][with_snack]" value="with_snack" id="with_snack" {{ ($travel_itinerary->with_snack) ? "checked" : "" }} data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="PM Snack" onclick="addSnack(this);">
                             </div>
                           </div>
         
                           <div class="col-1 text-center">
                             <label for="with_incidental_expenses" class="form-label">Inc. Expenses:</label>
-                            <input type="checkbox" name="inputs[0][with_incidental_expenses]" value="with_incidental_expenses" id="with_incidental_expenses" onclick="addIncidentalExpenses(this);">
-                          </div>
+                                <div class="form-check">
+                                  <input type="checkbox" name="inputs[{{ $int }}][with_incidental_expenses]" value="with_incidental_expenses" id="with_incidental_expenses" {{ ($travel_itinerary->with_incidental_expenses) ? "checked" : "" }} onclick="addIncidentalExpenses(this);">
+                              </div>
+                            </div>
+                           
         
                           <div class="col-1">
                             <label for="total" class="form-label">Total:</label>
-                            <input type="number" name="inputs[0][total]" id="total" class="form-control text-end fw-semibold bg-dark-subtle" readonly>
+                            <input type="number" name="inputs[{{ $int }}][total]" id="total" value="{{ $travel_itinerary->total }}" class="form-control text-end fw-semibold bg-dark-subtle" readonly>
                           </div>
+                          @if($int > 0)
+                           <div class="col text-center">
+                            <a href="javascript:(0)" class="btn btn-danger btn-xs mt-4 deleteRow">- DEL</a>
+                          </div>
+                          @endif
+                        </div>
+                        @php
+                          $i++;
+                        @endphp
+                       
+                           @endforeach
+                      </div>
+                    </div>
+
+                    <div class="my-3 row align-items-end">
+                      <div class="col-8"></div>
+                        <div class="col-2 text-end">
+                          <label for="grand_total" class="form-label">Grand Total:</label>
+                        </div>
+                        <div class="col-2">
+                          <input type="numbers" name="grand_total" id="grand_total" value="{{ $travelOrder->grand_total }}" class="form-control text-end bg-yellow fw-bold text-white" readonly>
                         </div>
                       </div>
-        
                     </div>
                 </div>
-        
-                <div class="my-3 row align-items-end">
-                  <div class="col-9"></div>
-                  <div class="col-1">
-                    <label for="grand_total" class="form-label">Grand Total:</label>
-                  </div>
-                  <div class="col-2">
-                    <input type="numbers" name="grand_total" id="grand_total" class="form-control text-end bg-yellow fw-bold text-white" readonly>
-                  </div>
-                </div>
-        
-              </div>
               <div class="col-xs-12 col-sm-12 col-md-12 text-center py-3">
-                <button type="submit" class="btn-sm btn-primary"><i class="fas fa-save"></i> Update</button>
+                <button type="submit" class="btn-sm btn-primary">Update</button>
               </div>
           </div>   
         </form>
@@ -268,12 +318,8 @@
       $('.select2').select2();
       $('.select2bs4').select2();
 
-     
-
       const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
       const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-
-      
 
       // Fund Source dynamic dropdown
       let pap = $("#pap_id");
@@ -388,8 +434,18 @@
         }
     }
 
+let itineraries = @json($itineraries);
 
-  var i = 0;
+console.log(itineraries);
+
+$.each(itineraries, function (id, value) {
+  getSelectedProvinces(id, value, true);
+  getSelectedCities(id, value, true);
+});
+
+
+
+  var i = itineraries.length - 1;
   $(".addRow").click(function(){
     i++;
     $("#itinerary-form").append(
@@ -456,7 +512,9 @@
 
               <div class="col-1 text-center">
                 <label for="with_incidental_expenses" class="form-label">Inc. Expenses:</label>
-                <input type="checkbox" name="inputs[`+i+`][with_incidental_expenses]" value="with_incidental_expenses" id="with_incidental_expenses" onclick="addIncidentalExpenses(this);">
+                  <div class="form-check">
+                    <input type="checkbox" name="inputs[`+i+`][with_incidental_expenses]" value="with_incidental_expenses" id="with_incidental_expenses" onclick="addIncidentalExpenses(this);">
+                  </div> 
               </div>
 
               <div class='col'>
@@ -464,7 +522,7 @@
                 <input type="number" name="inputs[`+i+`][total]" id="total" class="form-control text-end fw-semibold bg-dark-subtle" readonly>
               </div>
               <div class="col text-center">
-                <a href="javascript:(0)" class="btn btn-danger btn-sm mt-4 deleteRow">- DEL</a>
+                <a href="javascript:(0)" class="btn btn-danger btn-xs mt-4 deleteRow">- DEL</a>
               </div>
             </div>`);
 
@@ -477,7 +535,7 @@
     });
 
     $(document).on('click', '.deleteRow', function(){
-      $(this).parents('#itinerary-field').remove();
+      $(this).parents(".itineraryField").remove();
       i--;
       calcTotal();
     });
@@ -487,7 +545,6 @@
   });
 
   
-
   function replicateDate() {
       let departDate = $("#travel_departure_date").val();
       let  itineraryDate = $("[name='inputs[0][itinerary_date]']");
@@ -518,8 +575,36 @@
       // $.getJSON("/location/provinces",{'region_code': region_code, ajax: 'true'}, function(j){
 
 			// 	console.log(j);
-			// });		
+			// });
     }
+
+    function getSelectedProvinces(index, val, preselect) {
+      console.log(index);
+      var province_id = $("#province_code" + index);
+      var region_code =  val.region_code;
+
+          $.ajax({
+            url: "{{ route('location.provinces') }}",
+            data: {
+              region_code: region_code
+            },
+            success: function (data) {
+              console.log(data);
+              let options = '<option value="">-- Select Province --</option>';
+                $.each(data, function(id,value){
+                  options += '<option value="' + value.id + '"';
+                  if ((value.province_code == val.province_code) && preselect == true) {
+						        	options += ' selected="selected"';
+						      }
+                  options += '>' + value.name + '</option>';
+                });
+                
+              province_id.html(options);
+              province_id.removeAttr('disabled');
+            // console.log(data);
+            }
+          })
+      }
 
     function getCities(v) {
       var index = $(v).parent().parent().index();
@@ -537,6 +622,36 @@
           $.each(data, function (id, value){
             city_id.append('<option value="' + value.city_code + '">' + value.name + '</option>')
           });
+          city_id.removeAttr('disabled');
+        }
+      })
+      // $.getJSON("/location/provinces",{'region_code': region_code, ajax: 'true'}, function(j){
+
+			// 	console.log(j);
+			// });		
+    }
+
+    function getSelectedCities(index, val, preselect) {
+     
+      var city_id = $("#city_code" + index);
+      var province_code =  val.province_code;
+
+      $.ajax({
+        url: "{{ route('location.cities') }}",
+        data: {
+          province_code: province_code
+        },
+        success: function (data) {
+          let options = '<option value="">-- Select City --</option>';
+                $.each(data, function(id,value){
+                  options += '<option value="' + value.id + '"';
+                  if ((value.city_code == val.city_code) && preselect == true) {
+						        	options += ' selected="selected"';
+						      }
+                  options += '>' + value.name + '</option>';
+                });
+                
+          city_id.html(options);
           city_id.removeAttr('disabled');
         }
       })
@@ -565,7 +680,6 @@
     }
 
     function getPerItineraryTotal(index, costs) {
-
       let lodging_price = 0;
       let breakfast_price = 0;
       let lunch_price = 0;
@@ -618,6 +732,8 @@
     function addLodging(v) 
     {
       let index = $(v).parent().parent().parent().index();
+
+      console.log(index);
       
       let additionalCost = getAdditionalCost(index);
       additionalCost.then(function(costs){
@@ -689,11 +805,13 @@
     }
 
     function calcTotal() {
-      var cnt = $("div#itinerary-field");
+      //var cnt = $("div#itinerary-field");
+      var cnt = $(".itineraryField");
       var totals = 0;
       var grand_total = 0;
+      console.log(cnt)
       
-      for(let index = 0; index <= cnt.length; index++) {
+      for(let index = 0; index < cnt.length; index++) {
         var total = $("[name='inputs[" + index + "][total]']").val();
         totals = +(totals) + +(total);
       }
