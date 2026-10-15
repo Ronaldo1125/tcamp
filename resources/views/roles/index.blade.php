@@ -21,7 +21,7 @@
       <div class="row mb-2">
         @can('role-create')
         <div class="col-11 text-end">
-          <a class="btn btn-success btn-sm" href="{{ route('roles.create') }}" data-bs-toggle="modal" data-bs-target="#createRoleModal"><i class="fas fa-plus"></i> Create New Role</a>
+          <a class="btn btn-primary btn-sm" href="{{ route('roles.create') }}" data-bs-toggle="modal" data-bs-target="#createRoleModal"><i class="fas fa-plus"></i> Create New Role</a>
         </div>
         @endcan
       </div>
@@ -76,7 +76,7 @@
 @section('add_modal')
 
 <!-- Modal -->
-<div class="modal fade" id="createRoleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade add-modal" id="createRoleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -107,7 +107,7 @@
                 </div>
               </div>
                 <div class="modal-footer">  
-                  <button type="button" class="btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn-sm btn-secondary btn-cancel" data-bs-dismiss="modal">Close</button>
                   <button type="submit" class="btn-sm btn-primary" id="formSubmit">Submit</button>
                 </div>
         </form>
@@ -178,6 +178,17 @@
     $('.select2').select2()
 
     $('.select2bs4').select2()
+
+    $('.btn-cancel, .btn-close').on('click', function () {
+        let $modal = $(this).closest('.add-modal');
+        let $nameInput = $modal.find('#name');
+        let $permissionSelect = $modal.find('#permission');
+
+        if($modal.hasClass('add-modal')) {
+            $nameInput.val(''); // Clear the input for add modal
+            $permissionSelect.val(null).trigger('change'); // Clear the select for add modal
+        }
+    });
 
   });
 </script>

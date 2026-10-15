@@ -18,7 +18,7 @@
       <div class="row mb-2">
         @can('user-create')
         <div class="col-11 text-end">
-          <a class="btn btn-success btn-sm" href="{{ route('users.create') }}" data-bs-toggle="modal" data-bs-target="#createUserModal"><i class="fas fa-plus"></i> Create New User</a>
+          <a class="btn btn-sm btn-primary" href="{{ route('users.create') }}" data-bs-toggle="modal" data-bs-target="#createUserModal"><i class="fas fa-plus"></i> Create New User</a>
         </div>
         @endcan
       </div>
@@ -86,7 +86,7 @@
 @section('add_modal')
 
 <!-- Modal -->
-<div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade add-modal" id="createUserModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -165,7 +165,7 @@
                 </div>
               </div>
                 <div class="modal-footer">  
-                  <button type="button" class="btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn-sm btn-secondary btn-cancel" data-bs-dismiss="modal">Close</button>
                   <button type="submit" class="btn-sm btn-primary" id="formSubmit">Submit</button>
                 </div>
             </div>
@@ -183,7 +183,7 @@
 
 @foreach ($users as $user)  
 <!-- Modal -->
-<div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade edit-modal" id="editUserModal{{ $user->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -201,13 +201,13 @@
                     <div class="form-group">
                       <div class="mb-3 row">
                         <label for="name" class="form-label">Name:</label>
-                        <input type="text" name="name" id="name" class="form-control" value="{{ $user->name }}" placeholder="Name">
+                        <input type="text" name="name" id="name" class="form-control" value="{{ $user->name }}" data-original="{{ $user->name }}" placeholder="Name">
                       </div>
                       
                         
                         <div class="mb-3 row">
                           <label for="email" class="form-label pt-3">Email Account:</label>
-                          <input type="text" name="email" id="email" class="form-control" value="{{ $user->email }}" placeholder="Email">
+                          <input type="text" name="email" id="email" class="form-control" value="{{ $user->email }}" data-original="{{ $user->email }}" placeholder="Email">
                         </div>
                        
 
@@ -223,7 +223,7 @@
                      
                         <div class="mb-3 row">
                           <label for="role_id" class="form-label pt-3">Role:</label>
-                          <select class="form-control" name="role_id" id="role">
+                          <select class="form-control" name="role_id" id="role_id" data-original="{{ $user->role_id }}">
                             <option value="">Select a role...</option>
                               @foreach ($roles as $key => $role)
                               <option value="{{ $key }}" {{ ($user->role_id == $key) ? "selected='selected'" : "" }}>{{ $role }}</option>
@@ -233,7 +233,7 @@
                         
                         <div class="mb-3 row">
                           <label for="division_id" class="form-label">Division:</label>
-                          <select class="form-control" name="division_id" id="division_id">
+                          <select class="form-control" name="division_id" id="division_id" data-original="{{ $user->division_id }}">
                               <option value="">Select a division...</option>
                               @foreach ($divisions as $key => $division)
                               <option value="{{ $key }}" {{ ($user->division_id == $key) ? "selected" : "" }}>{{ $division }}</option>
@@ -243,7 +243,7 @@
   
                         <div class="mb-3 row">
                           <label for="designation_id" class="form-label">Designation:</label>
-                          <select class="form-control" name="designation_id" id="designation_id">
+                          <select class="form-control" name="designation_id" id="designation_id" data-original="{{ $user->designation_id }}">
                               <option value="">Select a designation...</option>
                               @foreach ($designations as $key => $designation)
                               <option value="{{ $key }}" {{ ($user->designation_id == $key) ? "selected" : "" }}>{{ $designation }}</option>
@@ -252,7 +252,7 @@
                         </div>
   
                         <div class="form-check">
-                          <input type="checkbox" name="is_active" id="is_active" value="{{ $user->is_active }}" {{ ($user->is_active) ? 'checked' : '' }}>
+                          <input type="checkbox" name="is_active" id="is_active" value="{{ $user->is_active }}" {{ ($user->is_active) ? 'checked' : '' }} data-original="{{ $user->is_active }}">
                           <label for="is_active" class="form-label pt-3">Active</label>
                           </div>
   
@@ -260,7 +260,7 @@
                 </div>
               </div>
                 <div class="modal-footer">  
-                  <button type="button" class="btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn-sm btn-secondary btn-cancel" data-bs-dismiss="modal">Close</button>
                   <button type="submit" class="btn-sm btn-primary" id="formSubmit">Submit</button>
                 </div>
             </div>
@@ -278,6 +278,38 @@
 <script>
   $(document).ready(function() {
     new DataTable('#listUserTable');
+
+      $('.btn-cancel, .btn-close').on('click', function () {
+          let $modal = $(this).closest('.edit-modal, .add-modal');
+          let $nameInput = $modal.find('#name');
+          let $emailInput = $modal.find('#email');
+          let $passwordInput = $modal.find('#password');
+          let $confirmPasswordInput = $modal.find('#confirm-password');
+          let $roleInput = $modal.find('#role_id');
+          let $divisionInput = $modal.find('#division_id');
+          let $designationInput = $modal.find('#designation_id');
+          let $isActiveInput = $modal.find('#is_active');
+
+          if($modal.hasClass('edit-modal')) {
+              $nameInput.val($nameInput.data('original')); // Reset to original value for edit modal
+              $emailInput.val($emailInput.data('original')); // Reset to original value for edit modal
+              $passwordInput.val(''); // Clear the password input for edit modal
+              $confirmPasswordInput.val(''); // Clear the confirm password input for edit modal
+              $roleInput.val($roleInput.data('original')); // Reset to original value for edit modal
+              $divisionInput.val($divisionInput.data('original')); // Reset to original value for edit modal
+              $designationInput.val($designationInput.data('original')); // Reset to original value for edit modal
+              $isActiveInput.prop('checked', ($isActiveInput.data('original') == 1)); // Reset to original value for edit modal
+          } else {
+              $nameInput.val(''); // Clear the input for add modal
+              $emailInput.val(''); // Clear the input for add modal
+              $passwordInput.val(''); // Clear the password input for add modal
+              $confirmPasswordInput.val(''); // Clear the confirm password input for add modal
+              $roleInput.val(''); // Clear the select for add modal
+              $divisionInput.val(''); // Clear the select for add modal
+              $designationInput.val(''); // Clear the select for add modal
+              $isActiveInput.prop('checked', false); // Uncheck the checkbox for add modal
+          }
+      });
   });
 </script>
 @endsection

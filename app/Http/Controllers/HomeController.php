@@ -28,7 +28,7 @@ class HomeController extends Controller
     public function index()
     {
         $notifications = auth()->user()->unreadNotifications;
-
+        
         //dd($notifications[0]['data']->travel_order_id);
 
         $performanceData = User::whereHas('immediateSupervisorRequests', function($query) {

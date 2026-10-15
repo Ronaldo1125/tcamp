@@ -15,6 +15,7 @@
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ url("/dist/css/bootstrap.min.css") }}">
   <link rel="stylesheet" href="{{ url("/dist/css/adminlte.css") }}">
+
  
   @yield('styles')
 </head>
@@ -140,12 +141,12 @@
                     </li>
                     <li><hr class="dropdown-divider"></li>
 
-                    <div style="max-height: 300px; overflow-y: auto;">
+                    <div style="max-height: 300px; overflow-y: auto; overflow-x: hidden;">
                         @forelse(auth()->user()->unreadNotifications as $notification)
                             <li>
-                                <a class="dropdown-item py-3 border-bottom" href="{{ route('travel_orders.show', $notification->data['travel_order_id']) }}">
-                                    <p class="mb-1 small fw-bold">{{ $notification->data['message'] }}</p>
-                                    <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
+                                <a class="dropdown-item py-3 border-bottom text-wrap" href="{{ route('travel_orders.show', $notification->data['travel_order_id']) }}">
+                                    <p class="mb-1 small fw-bold text-break">{{ $notification->data['message'] }}</p>
+                                    <small class="text-muted d-block">{{ $notification->created_at->diffForHumans() }}</small>
                                 </a>
                             </li>
                         @empty
@@ -233,6 +234,17 @@
 
 <!-- Bootstrap -->
 <script src="{{ url('/dist/js/bootstrap.bundle.min.js') }}"></script>
+
+<script type="text/javascript">
+// Hiding the modal when clicking outside of it fix error on aria-hidden attribute (2023-09-10 Banny)
+  document.addEventListener('hide.bs.modal', (event) => {
+      const activeModal = event.target;
+      if (activeModal && activeModal.contains(document.activeElement)) {
+        document.activeElement.blur();
+      }
+  });
+</script>
+
 @yield('javascripts')
 <!-- AdminLTE -->
 <script src="/dist/js/adminlte.js"></script>

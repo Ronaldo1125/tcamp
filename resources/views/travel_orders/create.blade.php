@@ -4,6 +4,7 @@
   
   <link rel="stylesheet" type="text/css" href=" {{ url('/dist/css/datatables/jquery.dataTables.min.css') }}">
   <link rel="stylesheet" type="text/css" href="{{ url('/dist/css/select2/select2.min.css')}}">
+  <link rel="stylesheet" type="text/css" href="{{ url('/dist/css/dropzone.css')}}">
 @endsection
 
 @section('content')
@@ -27,15 +28,15 @@
       <div class="col-md-12">
         <div class="card card-primary">
           <div class="card-header">
-            <h3 class="card-title">&nbsp;</h3>
+            <h3 class="card-title">Request Travel Order</h3>
           </div>
-            <form action="{{ route('travel_orders.store') }}" method="POST" id="add-form" enctype="multipart/form-data">    	
+            <form action="{{ route('travel_orders.store') }}" method="POST" id="add-form" enctype="multipart/form-data" onsubmit="this.querySelector('button[type="submit"]').disabled = true;">   	
             @csrf
             <input type="hidden" name="user_id" value="{{ Auth::user()->id }}"/>
-            <div class="card-body">
+            <div class="card-body bg-light">
               <div class="row mx-5">
                 <div class="col-xs-12 col-sm-12 col-md-12">
-                  <div class="p-3 bg-light">
+                  <div class="p-3 bg-white text-dark shadow-sm rounded-3 border-top border-primary border-5">
                     <div class="form-group">
                       <div class="mb-3 row">
                         <div class="col-4">
@@ -43,13 +44,55 @@
                           <textarea name="purpose" id="purpose" class="form-control" placeholder="Specify the purpose of the travel."></textarea>
                         </div>
                         <div class="col-2">
-                          <label for="purpose_image_image" class="form-label">Image:</label>
-                          <input type="file" name="purpose_image_filename" class="form-control" value="{{ old('purpose_image_filename') }}">
+                          <label for="purpose_image_filename" class="form-label">Purpose Document:</label>
+                          <div id="dropzone" class="dropzone-area p-5 text-center mb-4 position-relative">
+                            <input type="file" name="purpose_image_filename" id="fileInput" class="form-control" onchange="updateFileName(this)" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 10;
+                            ">
+                            
+                            <div class="d-flex flex-column align-items-center gap-3">
+                                <div class="upload-icon">
+                                    <i class="fa fa-cloud-upload-alt text-muted fs-4"></i>
+                                </div>
+                                <p class="small fw-medium text-secondary mb-0">
+                                    <span class="text-primary text-decoration-underline">Click to browse</span> or drag file here
+                                </p>
+                                <p class="xsmall text-muted mb-0" style="font-size: 0.75rem;">Maximum file payload size: 5MB</p>
+                            </div>
+
+                            <!-- Dynamic File Name Badge -->
+                            <div id="fileBadge" class="d-none mt-3">
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-2 fw-medium text-wrap text-break">
+                                    <i class="bi bi-file-earmark-check-fill me-1"></i>
+                                    <span id="fileName">document.pdf</span>
+                                </span>
+                            </div>
+                        </div>
+                          {{-- <label for="purpose_image_image" class="form-label">Image:</label>
+                          <input type="file" name="purpose_image_filename" class="form-control" value="{{ old('purpose_image_filename') }}"> --}}
                         </div>
         
-                        <div class="col-2">
-                          <label for="destination" class="form-label">Destination:</label>
-                          <input type="text" name="destination" id="destination" class="form-control" value="{{ old('destination') }}">
+                       <div class="col-2 mb-3">
+                          <div class="row-3">
+                            <label for="region_code" class="form-label">Region:</label>
+                              <select class="form-control" name="region_code" id="region_code">
+                                <option value="">-- Select Region --</option>
+                                  @foreach ($regions as $key => $region)
+                                  <option value="{{ $key }}" {{ (old("region_code") == $key ? "selected":"") }}>{{ $region }}</option>
+                                  @endforeach
+                              </select>
+                          </div>
+                          <div class="row-3">
+                            <label for="province_code" class="form-label mt-2">Province:</label>
+                              <select class="form-control" name="province_code" id="province_code">
+                                <option value="">-- Select Province --</option>
+                            </select>
+                          </div>
+                          <div class="row-3">
+                              <label for="city_code" class="form-label mt-2">City/Municipality:</label>
+                              <select class="form-control" name="city_code" id="city_code">
+                                <option value="">-- Select City/Municipality --</option>
+                              </select>           
+                          </div> 
                         </div>
                     
                         <div class="col-2">
@@ -152,36 +195,27 @@
                   <div class="form-group">
                     <div class="row my-3 mr-4">
                       <div class="col-12 text-end">
-                        <a href="javascript:(0)" class="btn btn-success btn-xs addRow">+ ADD</a>
+                        <a href="javascript:(0)" class="btn btn-to-add btn-xs addRow shadow">
+                           <i class="fa fa-plus"></i> <!-- Font Awesome Add Icon -->
+                          <span>ADD</span>
+                        </a>
                       </div>
                     </div>
                   </div>
 
                     <div class="form-group">
                       <div class="itineryMain" id="itinerary-form">
-                        <div class="mb-3 pt-2 row itineraryField bg-light" id="itinerary_field">
+                        <div class="row mb-3 py-3 itineraryField bg-white text-dark shadow rounded-3 border-top border-secondary border-5">
                           <div class="col-2">
-                            <label for="itinerary_date" class="form-label">Date:</label>
-                            <input type="date" name="inputs[0][itinerary_date]" id="itinerary_date" value="{{ old('inputs[0][itinerary_date]') }}" class="form-control">
-                          </div>
-                          <div class="col-2 mb-3">
-                              <label for="region_code" class="form-label">Region:</label>
-                              <select class="form-control" name="inputs[0][region_code]" id="region_code" onchange="getProvinces(this); getRegionCost(this);">
-                                <option value="">-- Select Region --</option>
-                                  @foreach ($regions as $key => $region)
-                                  <option value="{{ $key }}" {{ (old("inputs[0][region_code]") == $key ? "selected":"") }}>{{ $region }}</option>
-                                  @endforeach
-                              </select>
-
-                              <label for="province_code" class="form-label">Province:</label>
-                              <select class="form-control" name="inputs[0][province_code]" id="province_code0" onchange="getCities(this);" disabled>
-                                <option value="">-- Select Province --</option>
-                            </select>
-                                                         
-                              <label for="city_code" class="form-label">City/Municipality:</label>
-                              <select class="form-control" name="inputs[0][city_code]" id="city_code0" disabled>
-                                <option value="">-- Select City --</option>
-                              </select>           
+                            <div class="row-3">
+                              <label for="itinerary_date" class="form-label">Date:</label>
+                              <input type="date" name="inputs[0][itinerary_date]" id="itinerary_date" value="{{ old('inputs[0][itinerary_date]') }}" class="form-control">
+                            </div>
+                            <div class="row-3">
+                              <label for="place" class="form-label">Place:</label>
+                              <input type="text" name="inputs[0][place]" id="place" value="{{ old('inputs[0][place]') }}" class="form-control">
+                            </div>
+                            
                           </div>
         
                           <div class="col-2">
@@ -194,42 +228,42 @@
                               <input type="time" name="inputs[0][estimated_time_of_arrival]" class="form-control">
                             </div>   
                           </div>
-                          <div class="col-1">
-                            <label for="transportation_id" class="form-label">Transport:</label>
+                          <div class="col-2">
+                            <label for="transportation_id" class="form-label">Transportation:</label>
                             <select class="form-control" name="inputs[0][transportation_id]" id="transportation_id">
-                              <option value="">-- Transpo --</option>
+                              <option value="">-- Transportation --</option>
                                 @foreach ($transportations as $key => $transportation)
                                 <option value="{{ $key }}" {{ (old("inputs[0][transportation_id]") == $key ? "selected":"") }}>{{ $transportation }}</option>
                                 @endforeach
                             </select>
                             <label for="fare" class="form-label">Fare:</label>
-                            <input type="number" name="inputs[0][transportation_price]" id="fare" value="{{ old('inputs[0][transportation_price]') }}" class="form-control text-end" placeholder="PhP" oninput="addTransportPrice(this);">
+                            <input type="number" name="inputs[0][transportation_price]" id="fare" value="{{ old('inputs[0][transportation_price]') }}" class="form-control text-end itinerary-fare-input" placeholder="PhP" onkeydown="if(['e', 'E', '+', '-'].includes(event.key)) event.preventDefault();">
                           </div>
         
                           <div class="col-1 text-center">
                             <label for="with_lodging" class="form-label">Lodging:</label>
                             <div class="form-check">
-                              <input type="checkbox" name="inputs[0][with_lodging]" value="with_lodging" id="with_lodging" onclick="addLodging(this);">
+                              <input type="checkbox" name="inputs[0][with_lodging]" value="with_lodging" id="with_lodging" class="itinerary-checkbox">
                             </div>
                           </div>
         
                           <div class="col-1 text-center">
                             <label for="with_breakfast" class="form-label">Meals:</label>
                             <div class="form-check">
-                              <input type="checkbox" name="inputs[0][with_breakfast]" value="with_breakfast" id="with_breakfast" onclick="addBreakfast(this);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Breakfast">&nbsp;
-                              <input type="checkbox" name="inputs[0][with_lunch]" value="with_lunch" id="with_lunch" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Lunch" onclick="addLunch(this);">&nbsp;
-                              <input type="checkbox" name="inputs[0][with_snack]" value="with_snack" id="with_snack" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="PM Snack" onclick="addSnack(this);">
+                              <input type="checkbox" name="inputs[0][with_breakfast]" value="with_breakfast" id="with_breakfast" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Breakfast" class="itinerary-checkbox">&nbsp;
+                              <input type="checkbox" name="inputs[0][with_lunch]" value="with_lunch" id="with_lunch" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Lunch" class="itinerary-checkbox">&nbsp;
+                              <input type="checkbox" name="inputs[0][with_snack]" value="with_snack" id="with_snack" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="PM Snack" class="itinerary-checkbox">
                             </div>
                           </div>
         
                           <div class="col-1 text-center">
                             <label for="with_incidental_expenses" class="form-label">Inc. Expenses:</label>
                              <div class="form-check">
-                                <input type="checkbox" name="inputs[0][with_incidental_expenses]" value="with_incidental_expenses" id="with_incidental_expenses" onclick="addIncidentalExpenses(this);">
+                                <input type="checkbox" name="inputs[0][with_incidental_expenses]" value="with_incidental_expenses" id="with_incidental_expenses" class="itinerary-checkbox">
                              </div>
                           </div>
         
-                          <div class="col-1">
+                          <div class="col-2">
                             <label for="total" class="form-label">Total:</label>
                             <input type="number" name="inputs[0][total]" id="total" class="form-control text-end fw-semibold bg-dark-subtle" readonly>
                           </div>
@@ -250,7 +284,10 @@
         
               </div>
               <div class="col-xs-12 col-sm-12 col-md-12 text-center py-3">
-                <button type="submit" class="btn-sm btn-primary">Submit</button>
+                <button type="submit" class="btn btn-to-submit custom-blue-btn">
+                  <span>Submit Request</span>
+                  <i class="fa fa-paper-plane"></i>
+                </button>
               </div>
           </div>   
         </form>
@@ -271,7 +308,8 @@
     @section('javascripts')
   <script type="text/javascript" charset="utf8" src="{{ url('/dist/js/datatables/jquery.dataTables.min.js') }}"></script>
   <script type="text/javascript" charset="utf8" src="{{ url('/dist/js/select2/select2.full.min.js') }}"></script>
-<script type="text/javascript" charset="utf8" src="{{ url('/dist/js/easy-number-separator.js') }}"></script>
+  <script type="text/javascript" charset="utf8" src="{{ url('/dist/js/easy-number-separator.js') }}"></script>
+  <script type="text/javascript" charset="utf8" src="{{ url('/dist/js/dropzone.js') }}"></script>
 
   <script>
     $(document).ready(function() {
@@ -284,47 +322,53 @@
       const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
       // Fund Source dynamic dropdown
-      let pap = $("#pap_id");
-      let otherPapName = $("#other_pap_name");
+      const pap = $("#pap_id");
+      const otherPapName = $("#other_pap_name");
+
+      // On page load, disable the MFO/PAPs dropdown and hide the "Other PAP Name" input
       pap.attr('disabled','disabled');
       otherPapName.hide();
 
       $(document).on('change', '#fund_source_id', function(){
         let fundSource = $('#fund_source_id').val();
 
-        if(fundSource == '') {
-          pap.attr('disabled','disabled');
-          pap.removeAttr('required');
-          pap.show();
-          otherPapName.hide();
-          otherPapName.removeAttr('required');
-
-        } else {
-
-          $.ajax({
+        if(fundSource !== '') {
+         $.ajax({
             url: "{{ route('paps.getPaps') }}",
-            data: {
-              fund_source_id: fundSource
+            data: { fund_source_id: fundSource},
+            beforeSend: function() {
+              pap.html('<option value="">Loading...</option>').attr('disabled','disabled');
             },
+
             success: function (data) {
               if(data.length == 0) {
-                otherPapName.show();
+                pap.hide().removeAttr('required');
                 $('#pap_id-error').hide();
-                pap.hide();
+                    
+                otherPapName.show().attr('required', 'required');
               } else {
-                pap.html('<option value="">-- Select MFO/PAPs --</option>');
-                $.each(data, function(id,value){
-                  pap.append('<option value="' + value.id + '">' + value.pap_name + '</option>');
-                })
-                pap.removeAttr('disabled');
-                pap.show();
+                otherPapName.hide().removeAttr('required').val(''); // Clear old input value
                 $('#other_pap_name-error').hide();
-                otherPapName.hide();
+
+                let options = '<option value="">-- Select MFO/PAPs --</option>';
+                $.each(data, function(index, value) {
+                    options += `<option value="${value.id}">${value.pap_name}</option>`;
+                });
+                
+                pap.html(options).removeAttr('disabled').show().attr('required', 'required');
               }
-              //console.log(data);
+            },
+            error: function() {
+                console.error("Failed to fetch PAPs.");
             }
-          }) 
-          
+          });
+        } else {
+         pap.html('<option value="">-- Select MFO/PAPs --</option>')
+           .attr('disabled', 'disabled')
+           .removeAttr('required')
+           .show();
+           
+        otherPapName.hide().removeAttr('required').val('');
         }
       })
 
@@ -333,80 +377,71 @@
   $(".addRow").click(function(){
     i++;
     $("#itinerary-form").append(
-      `<div class="mb-3 py-2 row itineraryField bg-light" id="itinerary-field">
+      `<div class="row mb-3 py-3 itineraryField bg-white text-dark shadow rounded-3 border-top border-secondary border-5">
               <div class="col-2">
-                <label for="itinerary_date" class="form-label">Date:</label>
-                <input type="date" name="inputs[`+i+`][itinerary_date]" id="itinerary_date" class="form-control">
+                <div class="row-3">  
+                  <label for="itinerary_date" class="form-label">Date:</label>
+                  <input type="date" name="inputs[${i}][itinerary_date]" id="itinerary_date" class="form-control">
+                </div>
+                <div class="row-3">
+                  <label for="place" class="form-label">Place:</label>
+                  <input type="text" name="inputs[${i}][place]" id="place" class="form-control">
+                </div>    
               </div>
-              <div class="col-2">
-                    <label for="region_code" class="form-label">Region:</label>
-                    <select class="form-control" name="inputs[`+i+`][region_code]" id="region_code" onchange="getProvinces(this); getRegionCost(this);">
-                      <option value="">-- Select Region --</option>
-                        @foreach ($regions as $key => $region)
-                        <option value="{{ $key }}">{{ $region }}</option>
-                        @endforeach
-                    </select>
-                    <label for="province_code" class="form-label">Province:</label>
-                    <select class="form-control" name="inputs[`+i+`][province_code]" id="province_code`+i+`" onchange="getCities(this);" disabled>
-                      <option value="">-- Select Province --</option>
-                      
-                    </select>
-                    <label for="city_code" class="form-label">City/Municipality:</label>
-                    <select class="form-control" name="inputs[`+i+`][city_code]" id="city_code`+i+`" disabled>
-                      <option value="">-- Select City --</option>
-                    </select>
-                  </div>
               <div class="col-2">
                 <div class="row-3">
                   <label for="estimated_time_of_departure" class="form-label">ETD:</label>
-                  <input type="time" name="inputs[`+i+`][estimated_time_of_departure]" class="form-control">
+                  <input type="time" name="inputs[${i}][estimated_time_of_departure]" class="form-control">
                 </div>
                 <div class="row-3">
                   <label for="estimated_time_of_arrival" class="form-label">ETA:</label>
-                  <input type="time" name="inputs[`+i+`][estimated_time_of_arrival]" class="form-control">   
+                  <input type="time" name="inputs[${i}][estimated_time_of_arrival]" class="form-control">   
                 </div>
               </div>
-              <div class="col-1">
-                <label for="transportation_id" class="form-label">Transport:</label>
-                <select class="form-control" name="inputs[`+i+`][transportation_id]" id="transportation_id">
-                  <option value=''>-- Transpo --</option>
+              <div class="col-2">
+                <label for="transportation_id" class="form-label">Transportation:</label>
+                <select class="form-control" name="inputs[${i}][transportation_id]" id="transportation_id">
+                  <option value=''>-- Transportation --</option>
                     @foreach ($transportations as $key => $transportation)
                     <option value='{{ $key }}'>{{ $transportation }}</option>
                     @endforeach
                 </select>
                 <label for="fare" class="form-label">Fare:</label>
-                <input type="number" name='inputs[`+i+`][transportation_price]' id="fare" class="form-control text-end" placeholder="PhP" oninput="addTransportPrice(this);">
+                <input type="number" name='inputs[${i}][transportation_price]' id="fare" class="form-control text-end itinerary-fare-input" placeholder="PhP" onkeydown="if(['e', 'E', '+', '-'].includes(event.key)) event.preventDefault();">
               </div>
 
               <div class="col-1 text-center">
                 <label for="with_lodging" class="form-label">Lodging:</label>
                 <div class="form-check">
-                  <input type="checkbox" name="inputs[`+i+`][with_lodging]" value="with_lodging" id="with_lodging" onclick="addLodging(this);">
+                  <input type="checkbox" name="inputs[${i}][with_lodging]" value="with_lodging" id="with_lodging" class="itinerary-checkbox">
                 </div>
               </div>
 
               <div class="col-1 text-center">
                 <label for="with_breakfast" class="form-label">Meals:</label>
                 <div class="form-check">
-                  <input type="checkbox" name="inputs[`+i+`][with_breakfast]" value="with_breakfast" id="with_breakfast" title="Breakfast" onclick="addBreakfast(this);">&nbsp;
-                  <input type="checkbox" name="inputs[`+i+`][with_lunch]" value="with_lunch" id="with_lunch" title="Lunch" onclick="addLunch(this);">&nbsp;
-                  <input type="checkbox" name="inputs[`+i+`][with_snack]" value="with_snack" id="with_snack" title="PM Snack" onclick="addSnack(this);">
+                  <input type="checkbox" name="inputs[${i}][with_breakfast]" value="with_breakfast" id="with_breakfast" title="Breakfast" class="itinerary-checkbox">&nbsp;
+                  <input type="checkbox" name="inputs[${i}][with_lunch]" value="with_lunch" id="with_lunch" title="Lunch" class="itinerary-checkbox">&nbsp;
+                  <input type="checkbox" name="inputs[${i}][with_snack]" value="with_snack" id="with_snack" title="PM Snack" class="itinerary-checkbox">
                 </div>
               </div>
 
               <div class="col-1 text-center">
                 <label for="with_incidental_expenses" class="form-label">Inc. Expenses:</label>
                   <div class="form-check">
-                    <input type="checkbox" name="inputs[`+i+`][with_incidental_expenses]" value="with_incidental_expenses" id="with_incidental_expenses" onclick="addIncidentalExpenses(this);">
+                    <input type="checkbox" name="inputs[${i}][with_incidental_expenses]" value="with_incidental_expenses" id="with_incidental_expenses" class="itinerary-checkbox">
                   </div>
               </div>
 
-              <div class='col'>
+              <div class="col-2">
                 <label for="total" class="form-label">Total:</label>
-                <input type="number" name="inputs[`+i+`][total]" id="total" class="form-control text-end fw-semibold bg-dark-subtle" readonly>
+                <input type="number" name="inputs[${i}][total]" id="total" class="form-control text-end fw-semibold bg-dark-subtle" readonly>
               </div>
               <div class="col text-center">
-                <a href="javascript:(0)" class="btn btn-danger btn-xs mt-4 deleteRow">- DEL</a>
+                <a href="javascript:(0)" class="btn btn-danger btn-sm mt-4 deleteRow shadow rounded-3">
+                  <i class="fa fa-trash-alt"></i> <!-- Font Awesome Delete Icon -->
+                      <span>Delete</span>
+                  </a>
               </div>
             </div>`);
 
@@ -419,35 +454,68 @@
     });
 
     $(document).on('click', '.deleteRow', function(){
-      $(this).parents('#itinerary-field').remove();
+      $(this).parents('.itineraryField').remove();
       i--;
       calcTotal();
     });
-
-    
 
   });
 
   
 
-  function replicateDate() {
+    function replicateDate() {
       let departDate = $("#travel_departure_date").val();
       let  itineraryDate = $("[name='inputs[0][itinerary_date]']");
 
       itineraryDate.val(departDate);  
     }
 
-    function getProvinces(v) {
-      var index = $(v).parent().parent().index();
-      console.log(index);
-      var province_id = $("#province_code" + index);
-      var region_code =  $("[name='inputs[" + index + "][region_code]']").val();
+    // Logic on the Location On Change
+    const region_code   = $("#region_code");
+    const province_code = $("#province_code");
+    const city_code     = $("#city_code");
 
+    // On Load Disable province and ci
+    $(province_code).attr({disabled:"disabled"});
+    $(city_code).attr({disabled:"disabled"});
+
+    // On Change of Region
+    $(region_code).on('change', function() {
+        $(city_code).html('<option value="">-- Select City/Municipality --</option>');
+        if(this.value !== '') {  
+          $(province_code).removeAttr('disabled');
+          $(city_code).attr({disabled:"disabled"});
+          getProvinces();
+        } else {
+          $(province_code).html('<option value="">-- Select Province --</option>');
+          $(province_code).attr({disabled:"disabled"});
+          $(city_code).attr({disabled:"disabled"});   
+        } 
+    });
+
+    $(province_code).on('change', function() {
+        if(this.value !== '') {  
+          $(city_code).removeAttr('disabled');
+          getCities();
+        } else {
+          $(city_code).html('<option value="">-- Select City/Municipality --</option>');
+          $(city_code).attr({disabled:"disabled"});
+        } 
+    });
+
+
+    const getProvinces = () => {
+      const province_id = $("#province_code");
+      let region_code =  $("#region_code").val();
       $.ajax({
         url: "{{ route('location.provinces') }}",
         data: {
           region_code: region_code
         },
+        beforeSend: function() {
+          province_id.html('<option value="">Loading...</option>').attr('disabled','disabled');
+        },
+
         success: function (data) {
           province_id.html('<option value="">-- Select Province --</option>');
           $.each(data, function (id, value){
@@ -455,197 +523,150 @@
           });
           province_id.removeAttr('disabled');
          // console.log(data);
+        },
+        error: function() {
+          console.error("Failed to fetch Provinces.");
         }
       })
-      // $.getJSON("/location/provinces",{'region_code': region_code, ajax: 'true'}, function(j){
-
-			// 	console.log(j);
-			// });		
     }
 
-    function getCities(v) {
-      var index = $(v).parent().parent().index();
-      var city_id = $("#city_code" + index);
-      var province_code =  $("[name='inputs[" + index + "][province_code]']").val();
+    const getCities = () => {
+      const city_id = $("#city_code");
+      let province_code =  $("#province_code").val();
 
       $.ajax({
         url: "{{ route('location.cities') }}",
         data: {
           province_code: province_code
         },
+        beforeSend: function() {
+          city_id.html('<option value="">Loading...</option>').attr('disabled','disabled');
+        },
         success: function (data) {
-          city_id.html('<option value="">-- Select City --</option>');
+          city_id.html('<option value="">-- Select City/Municipality --</option>');
          
           $.each(data, function (id, value){
             city_id.append('<option value="' + value.city_code + '">' + value.name + '</option>')
           });
           city_id.removeAttr('disabled');
+        },
+        error: function() {
+          console.error("Failed to fetch Cities.");
         }
-      })
-      // $.getJSON("/location/provinces",{'region_code': region_code, ajax: 'true'}, function(j){
-
-			// 	console.log(j);
-			// });		
-    }
-
-
-    async function getAdditionalCost(index) {
-      return new Promise(function(resolve,reject){
-        let region_code =  $("[name='inputs[" + index + "][region_code]']").val();
-
-        $.ajax({
-          url: "{{ route('location.regions') }}",
-          data: {
-            region_code: region_code
-          },
-          success: function (data) {
-            resolve(data);   
-          }
-        });
-
-      }); 
-    }
-
-    function getPerItineraryTotal(index, costs) {
-
-      let lodging_price = 0;
-      let breakfast_price = 0;
-      let lunch_price = 0;
-      let snack_price = 0;
-      let incidental_expense_price = 0;
-      let sub_total = 0;
-      let fare = $("[name='inputs[" + index + "][transportation_price]']").val();
-
-      if($("[name='inputs[" + index + "][with_lodging]']").is(':checked')) {
-        if(costs.length != 0) lodging_price = costs[0]["lodging_cost"];
-      }
-
-      if($("[name='inputs[" + index + "][with_breakfast]']").is(':checked')) {
-        if (costs.length != 0) breakfast_price = costs[0]["meals_cost"];
-      }
-
-      if($("[name='inputs[" + index + "][with_lunch]']").is(':checked')) {
-        if (costs.length != 0) lunch_price = costs[0]["meals_cost"];
-      }
-
-      if($("[name='inputs[" + index + "][with_snack]']").is(':checked')) {
-        if (costs.length != 0) snack_price = costs[0]["meals_cost"];
-      }
-
-      if($("[name='inputs[" + index + "][with_incidental_expenses]']").is(':checked')) {
-        if (costs.length != 0) incidental_expense_price = costs[0]["incidental_expenses_cost"];
-      }
-
-      sub_total = +(fare) + +(lodging_price) + +(breakfast_price) + +(lunch_price) + +(snack_price) + +(incidental_expense_price);
-      let total = (Math.round(sub_total * 100) / 100).toFixed(2);
-
-      $("[name='inputs[" + index + "][total]']").val(total);
-
-      }
-
-    function getRegionCost(v) {
-
-      let index = $(v).parent().parent().index();
-
-      let additionalCost = getAdditionalCost(index);
-      additionalCost.then(function(costs) {
-
-        getPerItineraryTotal(index, costs);
-        calcTotal();
-
       });
-
     }
-
-    function addLodging(v) 
-    {
-      let index = $(v).parent().parent().parent().index();
-      
-      let additionalCost = getAdditionalCost(index);
-      additionalCost.then(function(costs){
-        
-        getPerItineraryTotal(index, costs);
-        calcTotal();
-      
-      });
-
-     }
      
-     function addBreakfast(v) {
-      var index = $(v).parent().parent().parent().index();
-      let additionalCost = getAdditionalCost(index);
-      additionalCost.then(function(costs){
 
+    // Cache global selectors
+const $regionCode = $("#region_code");
+const $grandTotal = $("[name='grand_total']");
+
+// Centralized state to cache cost data and prevent redundant API calls
+let cachedCosts = null;
+
+async function getAdditionalCost() {
+    if (cachedCosts) return cachedCosts;
+
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            url: "{{ route('location.regions') }}",
+            data: { region_code: $regionCode.val() },
+            success: function (data) {
+                cachedCosts = data; // Cache the response
+                resolve(data);
+            },
+            error: function (xhr, status, error) {
+                reject(error);
+            }
+        });
+    });
+}
+
+// Invalidate cache when region changes so the next action fetches fresh data
+$regionCode.on('change', async function() {
+    cachedCosts = null;
+
+        // Loop through every row on the page and force an update
+    $(".itineraryField").each(function() {
+        let index = $(this).index();
+        if (index !== -1) {
+            updateItinerary(index);
+        }
+    });
+
+});
+
+function getPerItineraryTotal(index, costs) {
+    const costData = (costs && costs.length > 0) ? costs[0] : {};
+    
+    // Helper to get cost if checkbox is checked
+    const getCheckedCost = (suffix, costValue) => {
+        return $("[name='inputs[" + index + "][with_" + suffix + "]']").is(':checked') ? (costValue || 0) : 0;
+    };
+
+    let lodging_price = getCheckedCost('lodging', costData.lodging_cost);
+    let breakfast_price = getCheckedCost('breakfast', costData.meals_cost);
+    let lunch_price = getCheckedCost('lunch', costData.meals_cost);
+    let snack_price = getCheckedCost('snack', costData.meals_cost);
+    let incidental_expense_price = getCheckedCost('incidental_expenses', costData.incidental_expenses_cost);
+    
+    let fare = parseFloat($("[name='inputs[" + index + "][transportation_price]']").val()) || 0;
+
+    let sub_total = fare + lodging_price + breakfast_price + lunch_price + snack_price + incidental_expense_price;
+    let total = (Math.round(sub_total * 100) / 100).toFixed(2);
+    
+    $("[name='inputs[" + index + "][total]']").val(total);
+}
+
+function calcTotal() {
+    let totals = 0;
+    $(".itineraryField").each(function(index) {
+        let total = parseFloat($("[name='inputs[" + index + "][total]']").val()) || 0;
+        totals += total;
+    });
+    
+    let grand_total = (Math.round(totals * 100) / 100).toFixed(2);
+    $grandTotal.val(grand_total);
+}
+
+// Unified orchestrator function for all itinerary updates
+async function updateItinerary(index) {
+    try {
+        let costs = await getAdditionalCost();
         getPerItineraryTotal(index, costs);
         calcTotal();
-      
-      });
-
+    } catch (error) {
+        console.error("Error updating itinerary costs:", error);
     }
+}
 
-    function addLunch(v) {
-      var index = $(v).parent().parent().parent().index();
-      let additionalCost = getAdditionalCost(index);
-      additionalCost.then(function(costs){
+// Public wrapper for your dropdown/region change event
+async function getRegionCost(v) {
+    await updateItinerary(v);
+}
 
-        getPerItineraryTotal(index, costs);
-        calcTotal();
-      
-      });
+// Modern jQuery Event Delegation
+// Replace your inline HTML attributes (e.g., onclick="addBreakfast(this)") with class names on the inputs
+$(document).ready(function() {
 
-    }
+  // 1. For text inputs (fare): Listen to 'input' event so it calculates live as you type
+    $(document).on('input', '.itinerary-fare-input', function() {
+        // Find the index based on closest itinerary container
+        let index = $(this).closest('.itineraryField').index();
+        if (index !== -1) {
+            updateItinerary(index);
+        }
+    });
 
-    function addSnack(v) {
-      var index = $(v).parent().parent().parent().index();
-      let additionalCost = getAdditionalCost(index);
-      additionalCost.then(function(costs){
+    // 2. For checkboxes: Keep listening to 'change' event
+    $(document).on('change', '.itinerary-checkbox', function() {
+        let index = $(this).closest('.itineraryField').index();
+        if (index !== -1) {
+            updateItinerary(index);
+        }
+    });
+});
 
-        getPerItineraryTotal(index, costs);
-        calcTotal();
-      
-      });
-
-    }
-
-    function addIncidentalExpenses(v) {
-      var index = $(v).parent().parent().index();
-      let additionalCost = getAdditionalCost(index);
-      additionalCost.then(function(costs){
-
-        getPerItineraryTotal(index, costs);
-        calcTotal();
-      
-      });
-    }
-   
-    function addTransportPrice(v) {
-
-      var index = $(v).parent().parent().index();
-      let additionalCost = getAdditionalCost(index);
-      additionalCost.then(function(costs){
-
-        getPerItineraryTotal(index, costs);
-        calcTotal();
-      
-      });
-    }
-
-    function calcTotal() {
-      var cnt = $("div#itinerary-field");
-      var totals = 0;
-      var grand_total = 0;
-      
-      for(let index = 0; index <= cnt.length; index++) {
-        var total = $("[name='inputs[" + index + "][total]']").val();
-        totals = +(totals) + +(total);
-      }
-
-      grand_total = (Math.round(totals * 100) / 100).toFixed(2);
-
-      //console.log(grand_total);
-      $("[name='grand_total']").val(grand_total);
-
-    }
 
  </script>
   @endsection

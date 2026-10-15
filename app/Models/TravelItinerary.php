@@ -13,9 +13,7 @@ class TravelItinerary extends Model
     protected $fillable = [
         'travel_order_id',
         'itinerary_date',
-        'region_code',
-        'province_code',
-        'city_code',
+        'place',
         'estimated_time_of_departure',
         'estimated_time_of_arrival',
         'transportation_id',
@@ -33,20 +31,20 @@ class TravelItinerary extends Model
         return $this->belongsTo(TravelOrder::class, 'travel_order_id', 'id');
     }
 
-    public function region() 
-    {
-        return $this->belongsTo(Region::class, 'region_code', 'region_code');
-    }
+    // public function region() 
+    // {
+    //     return $this->belongsTo(Region::class, 'region_code', 'region_code');
+    // }
 
-    public function province()
-    {
-        return $this->belongsTo(Province::class, 'province_code', 'province_code');
-    }
+    // public function province()
+    // {
+    //     return $this->belongsTo(Province::class, 'province_code', 'province_code');
+    // }
 
-    public function city()
-    {
-        return $this->belongsTo(City::class, 'city_code', 'city_code');
-    }
+    // public function city()
+    // {
+    //     return $this->belongsTo(City::class, 'city_code', 'city_code');
+    // }
 
     public function transportation()
     {

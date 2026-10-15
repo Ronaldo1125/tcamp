@@ -240,7 +240,7 @@
                         @foreach($requests as $req)
                         <tr>
                             <td>{{ $req->user->name }}</td>
-                            <td>{{ $req->destination }}</td>
+                            <td>{{ $req->city->name . ", " . $req->region->name }}</td>
                             <td>
                                 @if($req->status == 'approved')
                                     <span class="text-success">Fully Approved</span>
@@ -276,16 +276,20 @@
                                     {{ ucfirst($req->status) }}
                                 </span>
                             </td>
-                            <td class="text-end pe-4">
-                                <a href="#" class="btn btn-outline-secondary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#viewDetailModal{{$req->id}}">View Details</a>
-                                @if($req->status == 'approved')
-                                    <a href="{{ route('travel_orders.download', $req->id) }}" class="btn btn-sm btn-outline-secondary me-2">
-                                        <i class="fa fa-download"></i> TO
+                            <td class="text-end pe-4 text-nowrap">
+                                <div class="d-flex justify-content-end align-items-center gap-1">
+                                    <a href="#" class="btn btn-outline-secondary btn-sm" style="font-size: 0.7rem;" data-bs-toggle="modal" data-bs-target="#viewDetailModal{{$req->id}}">
+                                        Approvals
                                     </a>
-                                     <a href="{{ route('travel_orders.downloadORS', $req->id) }}" class="btn btn-sm btn-outline-secondary">
-                                        <i class="fa fa-download"></i> ORS
-                                    </a>
-                                @endif
+                                    @if($req->status == 'approved')
+                                        <a href="{{ route('travel_orders.download', $req->id) }}" class="btn btn-sm btn-outline-secondary" style="font-size: 0.7rem;">
+                                            <i class="fa fa-download"></i> TO
+                                        </a>
+                                        <a href="{{ route('travel_orders.downloadORS', $req->id) }}" class="btn btn-sm btn-outline-secondary" style="font-size: 0.7rem;">
+                                            <i class="fa fa-download"></i> ORS
+                                        </a>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                         @endforeach
@@ -316,7 +320,7 @@
 
 @foreach($requests as $req)
 <div class="modal fade" id="viewDetailModal{{$req->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="mb-0 fw-bold"><i class="bi bi-clock-history me-2"></i>Approval Timeline</h5>

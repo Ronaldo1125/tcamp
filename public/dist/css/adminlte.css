@@ -554,7 +554,7 @@ pre code {
   /* --bg-image: url('/dist/img/neda5_office.jpg');
   --bg-image-opacity: .8; */
   height: 100%;
-  background-image: url('/dist/img/neda5_office.jpg');
+  background-image: url('/dist/img/depdev5_office.png');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -2610,7 +2610,10 @@ fieldset:disabled a.btn {
   color: #fff;
   background-color: #007bff;
   border-color: #007bff;
-  box-shadow: none;
+  padding: 0.65rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
 }
 
 .btn-primary:hover {
@@ -2648,7 +2651,10 @@ fieldset:disabled a.btn {
   color: #fff;
   background-color: #6c757d;
   border-color: #6c757d;
-  box-shadow: none;
+  padding: 0.65rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
 }
 
 .btn-secondary:hover {
@@ -53055,5 +53061,25 @@ input[type="number"]::-webkit-inner-spin-button {
 .itineraryField {
   font-size: 0.75rem; /* Or 10px, 12px, etc. */
 }
+
+.btn-to-next, .btn-to-submit, .btn-to-add {
+    background: #154A9A;
+    border-color: #154A9A;
+    color: #fff;
+    padding: 0.65rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+/* Keeps the background blue and text white even when hovering */
+  .custom-blue-btn:hover {
+    background-color: #0d6efd !important; /* Bootstrap's primary blue */
+    border-color: #0d6efd !important;
+    color: #ffffff !important;
+    
+    /* Optional: Adds a slightly darker blue overlay so the user knows they are hovering */
+    filter: brightness(90%); 
+  }
 
 /*# sourceMappingURL=adminlte.css.map */

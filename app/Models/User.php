@@ -68,7 +68,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function designation()
     {
-        return $this->belongsTo(Designation::class);
+        return $this->belongsTo(Designation::class, 'designation_id', 'id');
     }
 
     public function approval_type()

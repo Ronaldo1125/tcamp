@@ -20,7 +20,7 @@
       <div class="row mb-2">
         @can('division-create')
         <div class="col-11 text-end">
-          <a class="btn btn-success btn-sm" href="{{ route('divisions.create') }}" data-bs-toggle="modal" data-bs-target="#createDivisionModal"><i class="fas fa-plus"></i> Create New Division</a>
+          <a class="btn btn-primary btn-sm" href="{{ route('divisions.create') }}" data-bs-toggle="modal" data-bs-target="#createDivisionModal"><i class="fas fa-plus"></i> Create New Division</a>
         </div>
         @endcan
       </div>
@@ -76,7 +76,7 @@
 @section('add_modal')
 
 <!-- Modal -->
-<div class="modal fade" id="createDivisionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade add-modal" id="createDivisionModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -105,7 +105,7 @@
                   </div>
                 </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn-sm btn-secondary btn-cancel" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn-sm btn-primary" id="formSubmit">Submit</button>
                   </div>
               </div>
@@ -121,7 +121,7 @@
 
 @foreach ($divisions as $division)  
 <!-- Modal -->
-<div class="modal fade" id="editDivisionModal{{ $division->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade edit-modal" id="editDivisionModal{{ $division->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -139,20 +139,20 @@
                       <div class="form-group">
                         <div class="mb-3 row">
                         <label for="division_name" class="form-label">Division Name:</label>
-                          <input type="text" name="division_name" id="division_name" class="form-control" value="{{ $division->division_name }}" placeholder="Division Name">
+                          <input type="text" name="division_name" id="division_name" class="form-control" value="{{ $division->division_name }}" data-original="{{ $division->division_name }}" placeholder="Division Name">
                         </div>
 
 
                         <div class="mb-3 row"> 
                           <label for="division_acronym" class="form-label pt-3">Division Acronym:</label>
-                          <input type="text" name="division_acronym" id="division_acronym" class="form-control" value="{{ $division->division_acronym }} {{ old('division_acronym')}}" placeholder="Division Acronym">
+                          <input type="text" name="division_acronym" id="division_acronym" class="form-control" value="{{ $division->division_acronym }}" data-original="{{ $division->division_acronym }}" placeholder="Division Acronym">
                         </div>
                       </div>
                     </div>
                   </div>
                  
                   <div class="modal-footer">
-                    <button type="button" class="btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn-sm btn-secondary btn-cancel" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn-sm btn-primary" id="formSubmit">Submit</button>
                   </div>
               </div>
@@ -170,6 +170,20 @@
 <script>
   $(document).ready(function() {
     new DataTable('#listDivisionTable');
+
+      $('.btn-cancel, .btn-close').on('click', function () {
+          let $modal = $(this).closest('.edit-modal, .add-modal');
+          let $nameInput = $modal.find('#division_name');
+          let $acronymInput = $modal.find('#division_acronym');
+
+          if($modal.hasClass('edit-modal')) {
+              $nameInput.val($nameInput.data('original')); // Reset to original value for edit modal
+              $acronymInput.val($acronymInput.data('original')); // Reset to original value for edit modal
+          } else {
+              $nameInput.val(''); // Clear the input for add modal
+              $acronymInput.val(''); // Clear the input for add modal
+          }
+      });
   });
 </script>
 @endsection

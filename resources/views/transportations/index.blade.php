@@ -20,7 +20,7 @@
       <div class="row mb-2">
         @can('transportation-create')
         <div class="col-11 text-end">
-          <a class="btn btn-success btn-sm" href="{{ route('transportations.create') }}" data-bs-toggle="modal" data-bs-target="#createTransportationModal"><i class="fas fa-plus"></i> Create New transportation</a>
+          <a class="btn btn-primary btn-sm" href="{{ route('transportations.create') }}" data-bs-toggle="modal" data-bs-target="#createTransportationModal"><i class="fas fa-plus"></i> Create New transportation</a>
         </div>
         @endcan
       </div>
@@ -74,7 +74,7 @@
 @section('add_modal')
 
 <!-- Modal -->
-<div class="modal fade" id="createTransportationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade add-modal" id="createTransportationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -98,7 +98,7 @@
                   </div>
                 </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn-sm btn-secondary btn-cancel" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn-sm btn-primary" id="formSubmit">Submit</button>
                   </div>
               </div>
@@ -114,7 +114,7 @@
 
 @foreach ($transportations as $transportation)  
 <!-- Modal -->
-<div class="modal fade" id="editTransportationModal{{ $transportation->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade edit-modal" id="editTransportationModal{{ $transportation->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -132,14 +132,14 @@
                       <div class="form-group">
                         <div class="mb-3 row">
                         <label for="transportation_name" class="form-label">Transportation Name:</label>
-                          <input type="text" name="transportation_name" id="transportation_name" class="form-control" value="{{ $transportation->transportation_name }}" placeholder="Transportation Name">
+                          <input type="text" name="transportation_name" id="transportation_name" class="form-control" value="{{ $transportation->transportation_name }}" data-original="{{ $transportation->transportation_name }}" placeholder="Transportation Name">
                         </div>
                       </div>
                     </div>
                   </div>
                  
                   <div class="modal-footer">
-                    <button type="button" class="btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn-sm btn-secondary btn-cancel" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn-sm btn-primary" id="formSubmit">Submit</button>
                   </div>
               </div>
@@ -158,6 +158,18 @@
 <script>
   $(document).ready(function() {
     new DataTable('#listTransportationTable');
+
+    // Reset form values when the modal is closed
+    $('.btn-cancel, .btn-close').on('click', function () {
+        let $modal = $(this).closest('.edit-modal, .add-modal');
+        let $nameInput = $modal.find('#transportation_name');
+
+        if($modal.hasClass('edit-modal')) {
+            $nameInput.val($nameInput.data('original')); // Reset to original value for edit modal
+        } else {
+            $nameInput.val(''); // Clear the input for add modal
+        }
+    });
   });
 </script>
 @endsection

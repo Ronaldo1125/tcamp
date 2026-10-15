@@ -90,7 +90,7 @@
 
 @foreach ($users as $user)  
 <!-- Modal -->
-<div class="modal fade" id="editUserModal{{ $user->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade edit-modal" id="editUserModal{{ $user->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -107,7 +107,7 @@
                     <div class="form-group">      
                         <div class="mb-3 row">
                           <label for="division_id" class="form-label">Division:</label>
-                          <select class="form-control" name="division_id" id="division_id">
+                          <select class="form-control" name="division_id" id="division_id" data-original="{{ $user->division_id }}">
                               <option value="">Select a division...</option>
                               @foreach ($divisions as $key => $division)
                               <option value="{{ $key }}" {{ ($user->division_id == $key) ? "selected" : "" }}>{{ $division }}</option>
@@ -117,7 +117,7 @@
   
                         <div class="mb-3 row">
                           <label for="designation_id" class="form-label">Designation:</label>
-                          <select class="form-control" name="designation_id" id="designation_id">
+                          <select class="form-control" name="designation_id" id="designation_id" data-original="{{ $user->designation_id }}">
                               <option value="">Select a designation...</option>
                               @foreach ($designations as $key => $designation)
                               <option value="{{ $key }}" {{ ($user->designation_id == $key) ? "selected" : "" }}>{{ $designation }}</option>
@@ -126,7 +126,7 @@
                         </div>
                         <div class="mb-3 row">
                           <label for="role_id" class="form-label pt-3">Role:</label>
-                          <select class="form-control" name="role_id" id="role">
+                          <select class="form-control" name="role_id" id="role" data-original="{{ $user->role_id }}">
                             <option value="">Select a role...</option>
                               @foreach ($roles as $key => $role)
                               <option value="{{ $key }}" {{ ($user->role_id == $key) ? "selected='selected'" : "" }}>{{ $role }}</option>
@@ -136,7 +136,7 @@
 
                         <div class="row">
                           <div class="form-check">
-                          <input type="checkbox" name="is_active" id="is_active" value="{{ old('is_active') }}">
+                          <input type="checkbox" name="is_active" id="is_active" class="form-check-input" value="{{ old('is_active')}}">
                           <label for="is_active" class="form-label">Active</label>
                           </div>
                         </div>
@@ -146,7 +146,7 @@
                 </div>
               </div>
                 <div class="modal-footer">  
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-secondary btn-cancel" data-bs-dismiss="modal">Close</button>
                   <button type="submit" class="btn btn-primary" id="formSubmit">Submit</button>
                 </div>
             </div>
@@ -164,6 +164,22 @@
 <script>
   $(document).ready(function() {
     new DataTable('#listUserTable');
+
+    $('.btn-cancel, .btn-close').on('click', function () {
+        let $modal = $(this).closest('.edit-modal');
+        let $divisionId = $modal.find('#division_id');
+        let $designationId = $modal.find('#designation_id');
+        let $roleId = $modal.find('#role');
+        let $statusCheckbox = $modal.find('#is_active'); // Find the checkbox
+
+        // Reset text inputs to their original values
+        $divisionId.val($divisionId.data('original'));
+        $designationId.val($designationId.data('original'));
+        $roleId.val($roleId.data('original'));
+        
+        // Force the checkbox to be unchecked every time
+        $statusCheckbox.prop('checked', false);
+    });
   });
 </script>
 @endsection

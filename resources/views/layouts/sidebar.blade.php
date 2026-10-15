@@ -51,6 +51,7 @@
             </p>
         </a>
         <ul class="nav nav-treeview">
+          @role('Admin')
           <li class="nav-item">
             <a href="{{ route('users.index') }}" class="nav-link">
                 <i class="nav-icon fas fa-users"></i>
@@ -59,6 +60,7 @@
               </p>
             </a>
           </li>
+          @endrole
           <li class="nav-item">
             <a href="{{ route('profiles.index') }}" class="nav-link">
                 <i class="nav-icon fas fa-id-card"></i>
@@ -76,6 +78,7 @@
               </p>
             </a>
           </li>
+          @role('Admin')
           <li class="nav-item">
             <a href="{{ route('users.view_unapprove_users') }}" class="nav-link">
                 <i class="nav-icon fas fa-user-times"></i>
@@ -84,9 +87,10 @@
               </p>
             </a>
           </li>
+          @endrole
         </ul>
       </li>
-
+        @role('Admin')
          <li class="nav-item">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-chart-pie"></i>
@@ -136,6 +140,7 @@
             </li>
           </ul>
         </li>
+        @endrole
         
 
         <li class="nav-item"><a  href="{{ route('logout') }}"

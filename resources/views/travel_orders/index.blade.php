@@ -107,7 +107,7 @@
     {{-- Section 2: My Own Requests --}}
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="fw-bold">My Travel Requests</h5>
-        <a href="{{ route('travel_orders.create') }}" class="btn btn-sm btn-success">
+        <a href="{{ route('travel_orders.create') }}" class="btn btn-sm btn-primary" title="New Request">
             <i class="bi bi-plus-lg"></i> New Request
         </a>
     </div>

@@ -16,7 +16,7 @@
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5 class="fw-bold mb-0">Request #{{ to_number($travelOrder->to_code, $travelOrder->id) }}</h5>
+                        <h5 class="fw-bold mb-0">Request #{{ $travelOrder->to_code }}</h5>
                         <span class="badge bg-{{ $travelOrder->status == 'approved' ? 'success' : ($travelOrder->status == 'disapproved' ? 'danger' : 'warning') }} fs-6">
                             {{ ucfirst($travelOrder->status) }}
                         </span>
@@ -28,7 +28,7 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-sm-4 text-muted">Destination</div>
-                        <div class="col-sm-8 fw-bold">{{ $travelOrder->destination }}</div>
+                        <div class="col-sm-8 fw-bold">{{ $travelOrder->city->name . ', ' . $travelOrder->region->name }}</div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-sm-4 text-muted">Estimated Cost</div>

@@ -19,7 +19,7 @@ use App\Notifications\RegistrationApproved;
 use Illuminate\Support\Facades\Notification;
 use App\Http\Requests\UserApproveRegistrationRequest;
 use App\Notifications\UserRegistrationApproved;
-
+use Illuminate\Support\Facades\Queue;
 class UserController extends Controller
 {
     public function __construct()
@@ -85,11 +85,17 @@ class UserController extends Controller
             'is_active' => $request->has('is_active'),
         ]);
 
-        $user->profile()->create();
+        $roleId = $request->input('role_id');
 
-        $user->assignRole($request->input('role_id'));
-
-        $user->sendEmailVerificationNotification();
+        DB::afterCommit(function () use ($user, $roleId) {
+        Queue::push(function () use ($user, $roleId) {
+            DB::transaction(function () use ($user, $roleId) {
+                $user->profile()->create();
+                $user->assignRole($roleId);
+                $user->sendEmailVerificationNotification();
+            });     
+        });
+    });
         
         toast('User data added successfully!','success');
 

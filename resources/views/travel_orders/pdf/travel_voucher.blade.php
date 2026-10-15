@@ -220,7 +220,7 @@ p.signatory {
       <div class="panel-body">
         <div class="my-4 text-center">
           <center><img class="mb-3" src="{{ public_path('dist/img/depdev5header2.png') }}"></center>
-            <p align="right" class="text-end mr-5">Local Travel Order No. {{ to_number($travelOrder->to_code, $travelOrder->id) }}</p>  
+            <p align="right" class="text-end mr-5">Local Travel Order No. {{ $travelOrder->to_code }}</p>  
         </div>
   
         <div class="table-responsive">
@@ -232,7 +232,7 @@ p.signatory {
                 <td scope="col" colspan="6">POSITION: <strong class="ml-2">{{ $travelOrder->user->designation->designation_name }}</strong></td>
               </tr>
               <tr>
-                <td scope="col" colspan="4">DESTINATION: <strong class="ml-2">{{ $travelOrder->destination }}</strong></td>
+                <td scope="col" colspan="4">DESTINATION: <strong class="ml-2">{{ $travelOrder->city->name . ", " . $travelOrder->region->name }}</strong></td>
                 <td scope="col" colspan="6">STATION: <strong class="ml-2">Legazpi City</strong></td>
               </tr>
               <tr>
@@ -267,29 +267,29 @@ p.signatory {
               @foreach($travelOrder->travel_itinineraries as $travel_itinerary)
               <tr>
                 <td>{{ date('M d, Y', strtotime($travel_itinerary->itinerary_date)) }}</td>
-                <td>{{ $travel_itinerary->city->name }}</td>
+                <td>{{ $travel_itinerary->place }}</td>
                 <td>{{ $travel_itinerary->estimated_time_of_departure }}</td>
                 <td>{{ $travel_itinerary->estimated_time_of_arrival }}</td>
                 <td>{{ $travel_itinerary->transportation->transportation_name }}</td>
                 <td align="right" style="padding-right: 2px;">{{ number_format($travel_itinerary->transportation_price, 2) }}</td>
-                <td align="right">{{ ($travel_itinerary->with_lodging) ? number_format($travel_itinerary->region->lodging_cost, 2) : "-" }}</td>
+                <td align="right">{{ ($travel_itinerary->with_lodging) ? number_format($travelOrder->region->lodging_cost, 2) : "-" }}</td>
                 <td align="right">
                   @php
                   $meals = 0;
-                  if($travel_itinerary->with_breakfast == 1)
-                   $meals += $travel_itinerary->region->meals_cost;
+                  if($travel_itinerary->with_breakfast)
+                   $meals += $travelOrder->region->meals_cost;
                   
-                  if($travel_itinerary->with_lunch == 1)
-                   $meals += $travel_itinerary->region->meals_cost;
+                  if($travel_itinerary->with_lunch)
+                   $meals += $travelOrder->region->meals_cost;
                   
-                  if($travel_itinerary->with_snack == 1)
-                   $meals += $travel_itinerary->region->meals_cost;
+                  if($travel_itinerary->with_snack)
+                   $meals += $travelOrder->region->meals_cost;
                   
                   @endphp
                   
                   {{ number_format($meals, 2) }}
                 </td>
-                <td align="right">{{ ($travel_itinerary->with_incidental_expenses) ? number_format($travel_itinerary->region->incidental_expenses_cost, 2) : "-" }}</td>
+                <td align="right">{{ ($travel_itinerary->with_incidental_expenses) ? number_format($travelOrder->region->incidental_expenses_cost, 2) : "-" }}</td>
                 <td align="right">{{ number_format($travel_itinerary->total, 2) }}</td>
               </tr>
               @endforeach

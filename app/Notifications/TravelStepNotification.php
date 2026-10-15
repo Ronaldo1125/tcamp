@@ -40,27 +40,27 @@ class TravelStepNotification extends Notification implements ShouldQueue
 
         return match ($this->type) {
             'new_submission' => (new MailMessage)
-                ->subject('New Travel Request: ' . $this->request->destination)
+                ->subject('New Travel Request: ' . $this->request->purpose)
                 ->line($this->request->user->name . ' has submitted a new travel request that requires your initial approval.')
-                ->line('Destination: ' . $this->request->destination)
+                ->line('Destination: ' . $this->request->city->name . ', ' . $this->request->province->name . ', ' . $this->request->region->name)
                 ->action('View Request Details', $url)
                 ->line('Please review this at your earliest convenience.'),
 
             'next_approver' => (new MailMessage)
                 ->subject('Action Required: New Travel Request for Approval')
-                ->line('A travel request to ' . $this->request->destination . ' is awaiting your review.')
+                ->line('A travel request to ' . $this->request->city->name . ', ' . $this->request->province->name . ', ' . $this->request->region->name . ' is awaiting your review.')
                 ->action('Review Request', $url)
                 ->line('Thank you for keeping the workflow moving!'),
 
             'final_approved' => (new MailMessage)
                 ->subject('Congratulations! Your Travel is Approved')
-                ->line('Your travel request to ' . $this->request->destination . ' has been fully approved by the Budget Officer.')
+                ->line('Your travel request to ' . $this->request->city->name . ', ' . $this->request->province->name . ', ' . $this->request->region->name . ' has been fully approved by the Budget Officer.')
                 ->action('View & Download Voucher', $url),
 
             'rejected' => (new MailMessage)
                 ->error()
                 ->subject('Attention: Travel Request Disapproved')
-                ->line('Your travel request to ' . $this->request->destination . ' was sent back for revisions.')
+                ->line('Your travel request to ' . $this->request->city->name . ', ' . $this->request->province->name . ', ' . $this->request->region->name . ' was sent back for revisions.')
                 ->line('Reason: ' . $this->request->remarks)
                 ->action('Edit & Resubmit', $url),
         };
@@ -71,7 +71,7 @@ class TravelStepNotification extends Notification implements ShouldQueue
 {
     return [
         'travel_order_id' => (int) $this->request->id, // Ensure it's an integer
-        'message' => 'New travel request to ' . $this->request->destination,
+        'message' => 'New travel request to ' . $this->request->city->name . ', ' . $this->request->province->name . ', ' . $this->request->region->name,
     ];
 }
 
@@ -83,8 +83,8 @@ class TravelStepNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            'travel_order_id' => int($this->request->id),
-            'message' => 'Travel to ' . $this->request->destination . ' updated.',
+            'travel_order_id' => (int) $this->request->id,
+            'message' => 'Travel to ' . $this->request->city->name . ', ' . $this->request->province->name . ', ' . $this->request->region->name . ' updated.',
         ];
     }
 }

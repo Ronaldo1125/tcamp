@@ -11,8 +11,8 @@ class Region extends Model
 
     protected $fillable = ['name' , 'region_code'];
 
-    public function travel_itineraries() 
+    public function travel_orders() 
     {
-        return $this->hasMany(TravelItinerary::class, 'region_code', 'region_code');
+        return $this->hasOne(TravelOrder::class, 'region_code', 'region_code');
     }
 }

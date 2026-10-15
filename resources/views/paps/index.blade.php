@@ -20,7 +20,7 @@
       <div class="row mb-2">
         @can('pap-create')
         <div class="col-11 text-end">
-          <a class="btn btn-success btn-sm" href="{{ route('paps.create') }}" data-bs-toggle="modal" data-bs-target="#createPapModal"><i class="fas fa-plus"></i> Create New MFO/PAP</a>
+          <a class="btn btn-primary btn-sm" href="{{ route('paps.create') }}" data-bs-toggle="modal" data-bs-target="#createPapModal"><i class="fas fa-plus"></i> Create New MFO/PAP</a>
         </div>
         @endcan
       </div>
@@ -75,7 +75,7 @@
 @section('add_modal')
 
 <!-- Modal -->
-<div class="modal fade" id="createPapModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade add-modal" id="createPapModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -110,7 +110,7 @@
                   </div>
                 </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn-sm btn-secondary btn-cancel" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn-sm btn-primary" id="formSubmit">Submit</button>
                   </div>
               </div>
@@ -126,7 +126,7 @@
 
 @foreach ($paps as $pap)  
 <!-- Modal -->
-<div class="modal fade" id="editPapModal{{ $pap->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade edit-modal" id="editPapModal{{ $pap->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -144,12 +144,12 @@
                       <div class="form-group">
                         <div class="mb-3 row">
                         <label for="pap_name" class="form-label">MFO/PAP Name:</label>
-                          <input type="text" name="pap_name" id="pap_name" class="form-control" value="{{ $pap->pap_name }}" placeholder="pap Name">
+                          <input type="text" name="pap_name" id="pap_name" class="form-control" value="{{ $pap->pap_name }}" data-original="{{ $pap->pap_name }}" placeholder="pap Name">
                         </div>
 
                          <div class="mb-3 row">
                           <label for="fund_source_id" class="form-label">User Account:</label>
-                          <select class="form-control" name="fund_source_id" id="fund_source_id">
+                          <select class="form-control" name="fund_source_id" data-original="{{ $pap->fund_source_id }}" id="fund_source_id">
                               <option value="">Select a fund source...</option>
                               @foreach ($fund_sources as $key => $fund_source)
                               <option value="{{ $key }}" {{ ($pap->fund_source_id == $key) ? "selected" : "" }}>{{ $fund_source }}</option>
@@ -160,7 +160,7 @@
                     </div>
                   </div>  
                   <div class="modal-footer">
-                    <button type="button" class="btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn-sm btn-secondary btn-cancel" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn-sm btn-primary" id="formSubmit">Submit</button>
                   </div>
               </div>
@@ -178,6 +178,27 @@
 <script>
   $(document).ready(function() {
     new DataTable('#listPapTable');
+
+    // Listen for click events on any cancel button
+    $('.btn-cancel, .btn-close').on('click', function() {
+        // Find the specific modal container hosting this clicked button
+        let $modal = $(this).closest('.edit-modal, .add-modal');
+        let $nameInput = $modal.find('#pap_name');
+        let $fundSourceInput = $modal.find('#fund_source_id');
+
+        if($modal.hasClass('edit-modal')) {
+            // Reset the name input to its original value
+            $nameInput.val($nameInput.data('original')); 
+            // Reset the select input to its original value
+            $fundSourceInput.val($fundSourceInput.data('original'));
+        } else if($modal.hasClass('add-modal')) {
+            // Clear the name input for add modal
+            $nameInput.val(''); 
+            // Reset the select input for add modal
+            $fundSourceInput.val('');
+        }
+        
+    });
   });
 </script>
 @endsection

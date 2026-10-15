@@ -20,7 +20,7 @@
       <div class="row mb-2">
         @can('fund_source-create')
         <div class="col-11 text-end">
-          <a class="btn btn-success btn-sm" href="{{ route('fund_sources.create') }}" data-bs-toggle="modal" data-bs-target="#createFundSourceModal"><i class="fas fa-plus"></i> Create New Fund Source</a>
+          <a class="btn btn-primary btn-sm" href="{{ route('fund_sources.create') }}" data-bs-toggle="modal" data-bs-target="#createFundSourceModal"><i class="fas fa-plus"></i> Create New Fund Source</a>
         </div>
         @endcan
       </div>
@@ -77,7 +77,7 @@
 @section('add_modal')
 
 <!-- Modal -->
-<div class="modal fade" id="createFundSourceModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade add-modal" id="createFundSourceModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -106,7 +106,7 @@
                   </div>
                 </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn-sm btn-secondary btn-cancel" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn-sm btn-primary" id="formSubmit">Submit</button>
                   </div>
               </div>
@@ -122,7 +122,7 @@
 
 @foreach ($fund_sources as $fund_source)  
 <!-- Modal -->
-<div class="modal fade" id="editFundSourceModal{{ $fund_source->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade edit-modal" id="editFundSourceModal{{ $fund_source->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -140,19 +140,19 @@
                       <div class="form-group">
                         <div class="mb-3 row">
                         <label for="fund_source_name" class="form-label">Fund Source Name:</label>
-                          <input type="text" name="fund_source_name" id="fund_source_name" class="form-control" value="{{ $fund_source->fund_source_name }}" placeholder="fund_source Name">
+                          <input type="text" name="fund_source_name" id="fund_source_name" class="form-control" value="{{ $fund_source->fund_source_name }}" data-original="{{ $fund_source->fund_source_name }}" placeholder="fund_source Name">
                         </div>
 
                         <div class="mb-3 row">
                           <label for="fund_source_acronym" class="form-label pt-3">Fund Source Acronym:</label>
-                          <input type="text" name="fund_source_acronym" id="fund_source_acronym" class="form-control" value="{{ $fund_source->fund_source_acronym }} {{ old('fund_source_acronym')}}" placeholder="Fund Source Acronym">
+                          <input type="text" name="fund_source_acronym" id="fund_source_acronym" class="form-control" value="{{ $fund_source->fund_source_acronym }}" data-original="{{ $fund_source->fund_source_acronym }}" placeholder="Fund Source Acronym">
                         </div>
                       </div>
                     </div>
                   </div>
                  
                   <div class="modal-footer">
-                    <button type="button" class="btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn-sm btn-secondary btn-cancel" data-bs-dismiss="modal">Close</button>
                     <button type="submit" class="btn-sm btn-primary" id="formSubmit">Submit</button>
                   </div>
               </div>
@@ -170,7 +170,22 @@
 <script>
   $(document).ready(function() {
     new DataTable('#listFundSourceTable');
+
+     $('.btn-cancel, .btn-close').on('click', function () {
+        let $modal = $(this).closest('.edit-modal, .add-modal');
+        let $nameInput = $modal.find('#fund_source_name');
+        let $acronymInput = $modal.find('#fund_source_acronym');
+
+        if($modal.hasClass('edit-modal')) {
+            $nameInput.val($nameInput.data('original')); // Reset to original value for edit modal
+            $acronymInput.val($acronymInput.data('original')); // Reset to original value for edit modal
+        } else {
+            $nameInput.val(''); // Clear the input for add modal
+            $acronymInput.val(''); // Clear the input for add modal
+        }
+    });
   });
+
 </script>
 @endsection
 

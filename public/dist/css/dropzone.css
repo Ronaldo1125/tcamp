@@ -1,0 +1,31 @@
+.dropzone-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 0.75rem;
+            background-color: rgba(248, 250, 252, 0.5);
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+        .dropzone-area:hover, .dropzone-area.drag-over {
+            background-color: #f1f5f9;
+            border-color: #0d6efd;
+        }
+        .upload-icon {
+            background-color: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+        .dropzone-area:hover .upload-icon { transform: scale(1.1); }
+
+        /* Fix text alignments for dynamically generated jsvalidation outputs */
+#add-form .invalid-feedback {
+    display: block;
+    margin-top: 15px;
+    font-size: 0.825rem;
+    font-weight: 500;
+}
+.dropzone-area .form-control.is-invalid ~ .d-flex {
+    color: #dc3545 !important;
+}

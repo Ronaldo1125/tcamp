@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -18,11 +19,12 @@ class TravelOrder extends Model
     use HasFactory, LogsActivity, Notifiable;
 
     protected $fillable = [
-        'to_code',
         'purpose',
         'purpose_image_filename',
+        'region_code',
+        'province_code',
+        'city_code',
         'user_id',
-        'destination',
         'travel_departure_date',
         'travel_arrival_date',
         'fund_source_id',
@@ -42,10 +44,36 @@ class TravelOrder extends Model
 
     ];
 
+    protected static function booted()
+    {
+        static::creating(function ($travelOrder) {
+
+            $dateString = now()->format('Ymd');
+            $prefix = 'TO-' . $dateString . '-';
+
+            $nextSequenceNumber = DB::transaction(function () use ($prefix) {
+                $lastTravelOrder = TravelOrder::where('to_code', 'like', $prefix . '%')
+                    ->lockForUpdate()
+                    ->latest('id')
+                    ->first();
+                    
+                if ($lastTravelOrder) {
+                    $lastSequenceNumber = (int) substr($lastTravelOrder->to_code, strrpos($lastTravelOrder->to_code, '-') + 1);
+                    return $lastSequenceNumber + 1;
+                }
+
+                return 1;
+            });
+            
+            $paddedSequenceNumber = str_pad($nextSequenceNumber, 3, '0', STR_PAD_LEFT);
+            $travelOrder->to_code = $prefix . $paddedSequenceNumber;
+        });
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-                ->logOnly(['purpose', 'destination','travel_departure_date', 'travel_arrival_date' ]);
+                ->logOnly(['purpose','travel_departure_date', 'travel_arrival_date' ]);
     }
 
     public function travel_itinineraries()
@@ -89,5 +117,20 @@ class TravelOrder extends Model
     // The assigned Director
     public function budgetOfficer() {
         return $this->belongsTo(User::class, 'budget_officer_id');
+    }
+
+     public function region() 
+    {
+        return $this->belongsTo(Region::class, 'region_code', 'region_code');
+    }
+
+    public function province()
+    {
+        return $this->belongsTo(Province::class, 'province_code', 'province_code');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class, 'city_code', 'city_code');
     }
 }

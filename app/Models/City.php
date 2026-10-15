@@ -11,9 +11,9 @@ class City extends Model
 
     protected $fillable = ['name', 'city_code', 'province_code', 'region_code'];
 
-    public function travel_itineraries()
+    public function travel_orders()
     {
-        return $this->hasMany(TravelItinerary::class, 'city_code', 'city_code');
+        return $this->hasOne(TravelOrder::class, 'city_code', 'city_code');
     }
     
 }

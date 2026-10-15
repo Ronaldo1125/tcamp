@@ -33,7 +33,7 @@ use App\Http\Controllers\TransportationController;
 
 Route::redirect('/', 'login');
 
-Route::get('/testmail', [MailController::class, 'index']);
+//Route::get('/testmail', [MailController::class, 'index']);
 
 
 Route::group(['middleware' => 'prevent-back-history'],function(){
@@ -48,53 +48,45 @@ Route::group(['middleware' => 'prevent-back-history'],function(){
 
     Route::group(['middleware' => ['auth']], function() {
 
-        // Route::post('/travel/preview', [TravelController::class, 'preview'])->name('travel.preview');
-        // Route::resource('travel', TravelController::class);
-        Route::resource('roles', RoleController::class);
-        Route::get('/users/viewUnapproveUsers', [UserController::class, 'viewUnapproveUsers'])->name('users.view_unapprove_users');
-        Route::post('/users/approveRegistration/{id}', [UserController::class, 'approveRegistration'])->name('users.approveRegistration');
-        Route::resource('users', UserController::class);
-        
+        // --- SYSTEM SETTINGS & SYSTEM USER MANAGEMENT (ADMIN ONLY) ---
+        Route::group(['middleware' => ['role:Admin']], function() {
+            Route::get('/users/getUsers', [UserController::class, 'getUsers'])->name('users.getUsers');
+            Route::get('/users/viewUnapproveUsers', [UserController::class, 'viewUnapproveUsers'])->name('users.view_unapprove_users');
+            Route::post('/users/approveRegistration/{id}', [UserController::class, 'approveRegistration'])->name('users.approveRegistration');
+            Route::resource('users', UserController::class);
 
-        // Route::get('users', [UserController::class, 'index'])->name('users.index');
-        // Route::get('users/create', [UserController::class, 'create'])->name('users.create');
-        // Route::get('users/destroy/{id}', [UserController::class, 'destroy'])->name('users.destroy');
-        // Route::get('users/edit/{id}', [UserController::class, 'edit'])->name('users.edit');
-        // Route::get('users/store', [UserController::class, 'store'])->name('users.store');
-        // Route::get('users/update/{id}', [UserController::class, 'update'])->name('users.update');
-        Route::resource('divisions', DivisionController::class);
-        Route::resource('designations', DesignationController::class);
-        Route::resource('fund_sources', FundSourceController::class);
-        Route::resource('transportations', TransportationController::class);
-        Route::resource('employees', EmployeeController::class);
+            // --- BASIC CRUD RESOURCES ---
+            Route::resource('roles', RoleController::class);
+            Route::resource('divisions', DivisionController::class);
+            Route::resource('designations', DesignationController::class);
+            Route::resource('fund_sources', FundSourceController::class);
+            Route::resource('transportations', TransportationController::class);
+        });
 
+        //Route::resource('employees', EmployeeController::class);
+
+        // --- PAPS ---
         Route::get('/paps/getPaps', [PapController::class, 'getPaps'])->name('paps.getPaps');
-
         Route::resource('paps', PapController::class);
 
+        // --- TRAVEL ORDERS ---
         Route::post('/travel_orders/sendApproval/{id}', [TravelOrderController::class, 'sendApproval'])->name('travel_orders.sendApproval');
         Route::get('/travel_orders/viewTravelOrder/{travelOrder}', [TravelOrderController::class, 'viewTravelOrder'])->name('travel_orders.view_travel_order');
         Route::get('/travel_orders/viewORS/{id}', [TravelOrderController::class, 'viewORS'])->name('travel_orders.view_ors');
         // Approval Actions (Specific steps)
         Route::post('/travel_orders/{travelOrder}/approve', [TravelOrderController::class, 'approve'])
-            ->name('travel_orders.approve');
-            
+            ->name('travel_orders.approve');   
         Route::post('/travel_orders/{travelOrder}/disapprove', [TravelOrderController::class, 'disapprove'])
             ->name('travel_orders.disapprove');
-
         Route::get('/travel_orders/{travelOrder}/download', [TravelOrderController::class, 'downloadVoucher'])
         ->name('travel_orders.download');
-
         Route::get('/travel_orders/{travelOrder}/downloadORS', [TravelOrderController::class, 'downloadORS'])
         ->name('travel_orders.downloadORS');
 
-
+        // Main resource route for travel orders
         Route::resource('travel_orders', TravelOrderController::class);
         
-           
-        // Route of travel
-        //Route::resource('students', StudentController::class);
-
+        // --- LOCATION ENDPOINTS ---
         Route::get('/getRegions', [HttpLocationController::class, 'getRegions'])->name('getRegions');
         Route::get('/getProvinces', [HttpLocationController::class, 'getProvinces']);
         Route::get('/getCities', [HttpLocationController::class, 'getCities']);
@@ -104,11 +96,8 @@ Route::group(['middleware' => 'prevent-back-history'],function(){
         Route::get('/location/cities', [LocationController::class, 'cities'])->name('location.cities');
         Route::get('/location/regions', [LocationController::class, 'regions'])->name('location.regions');
 
-        //Route of Profile
-        
-        //Route::resource('/profiles', ProfileController::class);
+        // --- PROFILE CONFIGURATION ---
         Route::get('/profiles', [ProfileController::class, 'index'])->name('profiles.index');
-        //Route::put('/profiles/update/{id}', [ProfileController::class, 'update'])->name('profiles.update');
         Route::post('/profiles/update-password/{id}', [ProfileController::class, 'updatePassword'])->name('profiles.updatePassword');
         Route::get('/profiles/admin-approval', [ProfileController::class, 'adminApproval'])->name('profiles.adminApproval');
         Route::get('/profiles/change-password', [ProfileController::class, 'changePassword'])->name('profiles.changePassword');
@@ -116,9 +105,8 @@ Route::group(['middleware' => 'prevent-back-history'],function(){
 
         Route::post('/profiles/update-pic', [ProfileController::class, 'updatePic'])->name('profiles.updatePic');
         Route::post('/profiles/update-info', [ProfileController::class, 'updateInfo'])->name('profiles.updateInfo');
-        
-        //Route::post('/home/markNotification', [HomeController::class, 'markNotification'])->name('home.markNotification');
 
+        // --- NOTIFICATIONS ---
         Route::post('/notifications/mark-as-read', function () {
                 auth()->user()->unreadNotifications->markAsRead();
                 return back();

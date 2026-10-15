@@ -11,8 +11,8 @@ class Province extends Model
 
     protected $fillable = ['name', 'province_code', 'region_code'];
 
-    public function travel_itineraries()
+    public function travel_orders()
     {
-        $this->hasMany(TravelItinerary::class, 'province_code', 'province_code');
+        return $this->hasOne(TravelOrder::class, 'province_code', 'province_code');
     }
 }
