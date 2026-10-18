@@ -28,6 +28,7 @@ class HomeController extends Controller
     public function index()
     {
         $notifications = auth()->user()->unreadNotifications;
+        $user = auth()->user();
         
         //dd($notifications[0]['data']->travel_order_id);
 
@@ -47,7 +48,9 @@ class HomeController extends Controller
                 ];
             });
 
-        $requests = TravelOrder::with(['user', 'immediateSupervisor', 'management', 'budgetOfficer'])->get();
+        $requests = TravelOrder::forUser($user)->with(['user', 'immediateSupervisor', 'management', 'budgetOfficer'])->get();
+
+        //dd($requests);
     
         $stats = [
             'approvedCount' => TravelOrder::where('status', 'approved')->count(),

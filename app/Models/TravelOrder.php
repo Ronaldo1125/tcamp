@@ -7,6 +7,7 @@ use App\Models\FundSource;
 use App\Models\Pap;
 use App\Models\TravelItinerary;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -43,6 +44,24 @@ class TravelOrder extends Model
         'grand_total',
 
     ];
+
+    public function scopeForUser(Builder $query, User $user): Builder
+    {
+        // 1. Admin: Display everything (no filtering)
+        if ($user->hasAnyRole(['Admin', 'Budget Officer', 'Management'])) {
+            return $query;
+        }
+
+        // 2. Division Chief: Display inputs from users in their division
+        if ($user->hasRole('Immediate Supervisor')) {
+            return $query->whereHas('user', function ($q) use ($user) {
+                $q->where('division_id', $user->division_id);
+            });
+        }
+
+        // 3. Regular User: Display only their own inputs
+        return $query->where('user_id', $user->id);
+    }
 
     protected static function booted()
     {
